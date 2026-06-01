@@ -10,7 +10,7 @@ export function HeroHeader({ name }: HeroHeaderProps) {
   const rest = words.slice(1).join(" ");
 
   return (
-    <header className="max-w-7xl mx-auto mb-20 mt-12 md:mt-20">
+    <header className="max-w-7xl mx-auto mb-8 mt-6 md:mt-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
         <div className="lg:col-span-2 overflow-hidden">
           <h1 className="js-header-fade text-5xl md:text-7xl font-extralight tracking-tighter uppercase leading-none text-neutral-900">

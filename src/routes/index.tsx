@@ -54,7 +54,7 @@ function HomeComponent() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-neutral-50 text-neutral-900 p-6 md:p-12 font-sans antialiased selection:bg-neutral-200"
+      className="min-h-screen bg-neutral-50 text-neutral-900 p-4 md:p-8 font-sans antialiased selection:bg-neutral-200"
     >
       <HeroHeader name={siteConfig.name} />
       <main className="max-w-7xl mx-auto">
