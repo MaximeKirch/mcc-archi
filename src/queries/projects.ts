@@ -2,6 +2,33 @@ import { queryOptions } from "@tanstack/react-query";
 import { siteConfig } from "#/config/site.ts";
 import type WordPressProject from "#/types/wordpress.ts";
 
+const wpOrigin = new URL(siteConfig.apiUrl).origin;
+
+function normalizeUrl(url: string | false): string | false {
+  if (!url) return false;
+  return url.replace(/^https?:\/\/[^/]+/, wpOrigin);
+}
+
+function normalizeProjectUrls(project: WordPressProject): WordPressProject {
+  return {
+    ...project,
+    acf: {
+      ...project.acf,
+      architecture_cover_image: normalizeUrl(project.acf.architecture_cover_image) as string,
+      image_1: normalizeUrl(project.acf.image_1),
+      image_2: normalizeUrl(project.acf.image_2),
+      image_3: normalizeUrl(project.acf.image_3),
+      image_4: normalizeUrl(project.acf.image_4),
+      image_5: normalizeUrl(project.acf.image_5),
+      image_6: normalizeUrl(project.acf.image_6),
+      image_7: normalizeUrl(project.acf.image_7),
+      image_8: normalizeUrl(project.acf.image_8),
+      image_9: normalizeUrl(project.acf.image_9),
+      image_10: normalizeUrl(project.acf.image_10),
+    },
+  };
+}
+
 async function fetchProjects(): Promise<WordPressProject[]> {
   const response = await fetch(
     `${siteConfig.apiUrl}/posts?${siteConfig.acfFormatParam}`,
@@ -9,7 +36,8 @@ async function fetchProjects(): Promise<WordPressProject[]> {
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des projets");
   }
-  return response.json();
+  const data: WordPressProject[] = await response.json();
+  return data.map(normalizeProjectUrls);
 }
 
 export const projectsQueryOptions = queryOptions({
@@ -24,11 +52,11 @@ async function fetchProjectBySlug(slug: string): Promise<WordPressProject> {
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération du projet");
   }
-  const data = await response.json();
+  const data: WordPressProject[] = await response.json();
   if (data.length === 0) {
     throw new Error("Projet introuvable");
   }
-  return data[0];
+  return normalizeProjectUrls(data[0]);
 }
 
 export const projectBySlugQueryOptions = (slug: string) =>
