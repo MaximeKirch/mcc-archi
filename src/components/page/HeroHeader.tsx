@@ -20,7 +20,7 @@ export function HeroHeader({ name }: HeroHeaderProps) {
         <div className="pb-2">
           <div className="js-header-fade lg:text-right">
             <p className="text-neutral-400 text-xs tracking-widest uppercase font-mono">
-              Studio d'architecture — Montréal
+              Aterlier d'architecture — Evisa
             </p>
             <Link
               to="/contact"
