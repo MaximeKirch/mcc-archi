@@ -1,0 +1,100 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useRef } from "react";
+import { siteConfig } from "#/config/site.ts";
+import { gsap, useGSAP } from "#/lib/gsap.ts";
+import { PageNav } from "#/components/page/PageNav.tsx";
+import { aboutPageQueryOptions } from "#/queries/about.ts";
+
+export const Route = createFileRoute("/about")({
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(aboutPageQueryOptions),
+  component: AboutComponent,
+});
+
+function AboutComponent() {
+  const { data: page } = useSuspenseQuery(aboutPageQueryOptions);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const words = page.title.rendered.split(" ");
+
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+
+      tl.from(".js-about-word", {
+        y: "110%",
+        duration: 1.1,
+        stagger: 0.08,
+      })
+        .from(
+          ".js-about-line",
+          {
+            scaleX: 0,
+            transformOrigin: "left center",
+            duration: 1.4,
+            ease: "power3.inOut",
+          },
+          "-=0.7",
+        )
+        .from(
+          ".js-about-content",
+          {
+            opacity: 0,
+            y: 30,
+            duration: 1,
+          },
+          "-=0.8",
+        );
+    },
+    { scope: containerRef },
+  );
+
+  return (
+    <div
+      ref={containerRef}
+      className="min-h-screen bg-neutral-50 text-neutral-900 font-sans antialiased flex flex-col"
+    >
+      <PageNav backLabel="Portfolio" rightLabel="Atelier" />
+
+      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12 md:py-20">
+        <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter uppercase leading-[1.2] text-[#515f3c]">
+          {words.map((word, i) => (
+            <span
+              key={i}
+              className="inline-block overflow-hidden mr-[0.3em] last:mr-0"
+            >
+              <span className="js-about-word inline-block">{word}</span>
+            </span>
+          ))}
+        </h1>
+
+        <div className="js-about-line h-[1px] w-full bg-[#515f3c] mt-8 mb-12" />
+
+        <div
+          className="js-about-content prose prose-neutral max-w-3xl prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#515f3c] prose-headings:uppercase prose-a:text-[#515f3c] prose-strong:text-[#515f3c] prose-p:text-neutral-700 prose-p:leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: page.acf.about_description }}
+        />
+      </main>
+
+      <footer className="max-w-7xl w-full mx-auto border-t border-neutral-200/60 px-6 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono text-neutral-400">
+        <div>© {new Date().getFullYear()} — {siteConfig.name}.</div>
+        <div className="flex gap-6">
+          <a
+            href="https://www.instagram.com/mcc_architecture/"
+            target="_blank"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            INSTAGRAM
+          </a>
+          <a
+            href="https://www.linkedin.com/in/marie-coulombon-casanova/"
+            target="_blank"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            LINKEDIN
+          </a>
+        </div>
+      </footer>
+    </div>
+  );
+}

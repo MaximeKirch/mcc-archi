@@ -6,7 +6,11 @@ interface PageNavProps {
   sticky?: boolean;
 }
 
-export function PageNav({ backLabel, rightLabel, sticky = false }: PageNavProps) {
+export function PageNav({
+  backLabel,
+  rightLabel,
+  sticky = false,
+}: PageNavProps) {
   return (
     <nav
       className={`max-w-7xl w-full mx-auto px-6 py-6 flex items-center justify-between border-b border-neutral-200/60 ${
@@ -15,7 +19,7 @@ export function PageNav({ backLabel, rightLabel, sticky = false }: PageNavProps)
     >
       <Link
         to="/"
-        className="text-xs uppercase tracking-widest text-neutral-500 hover:text-neutral-900 transition-colors flex items-center gap-2"
+        className="text-xs uppercase tracking-widest text-[#515f3c]! hover:text-neutral-400! transition-colors flex items-center gap-2"
       >
         ← {backLabel}
       </Link>

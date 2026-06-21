@@ -21,12 +21,20 @@ function HomeComponent() {
     () => {
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-      tl.from(".js-header-fade", {
+      tl.from(".js-header-title", {
         y: -30,
         opacity: 0,
         duration: 1.2,
-        stagger: 0.15,
-      })
+      }).from(
+        ".js-header-fade",
+        {
+          y: -30,
+          opacity: 0,
+          duration: 1.2,
+          stagger: 0.15,
+        },
+        "-=0.8",
+      )
         .from(
           ".js-header-line",
           {
