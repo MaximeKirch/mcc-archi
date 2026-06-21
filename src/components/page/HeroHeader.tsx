@@ -33,7 +33,7 @@ export function HeroHeader({ name }: HeroHeaderProps) {
               borderRadius: 0,
             }}
           />
-          <div className="js-header-fade hidden lg:flex lg:flex-col lg:items-end mt-8 gap-1">
+          <div className="js-header-fade hidden lg:flex lg:flex-col lg:items-end mt-8 gap-1 ">
             <p className="text-[#515f3c] text-xs tracking-widest uppercase font-mono">
               Atelier d'architecture — Evisa
             </p>
@@ -57,7 +57,7 @@ export function HeroHeader({ name }: HeroHeaderProps) {
           À propos de l'atelier →
         </Link>
       </div>
-      <div className="js-header-line h-[1px] w-full bg-neutral-200 mt-8" />
+      <div className="js-header-line h-[1px] w-full bg-[#515f3c] mt-8" />
     </header>
   );
 }
