@@ -24,9 +24,6 @@ export function ContactDetails() {
         <a href="tel:+33652055586" className={`${linkClass} font-mono`}>
           +33 6 52 05 55 86
         </a>
-        <a href="tel:+14385285779" className={`${linkClass} font-mono`}>
-          +1 (438) 528-5779
-        </a>
       </InfoBlock>
 
       <InfoBlock label="Le Studio">
