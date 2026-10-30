@@ -64,8 +64,11 @@ function HomeComponent() {
       ref={containerRef}
       className="min-h-screen bg-neutral-50 text-neutral-900 p-4 md:p-8 font-sans antialiased selection:bg-neutral-200"
     >
-      <HeroHeader name={siteConfig.name} />
+      <HeroHeader name={siteConfig.name} architect={siteConfig.architect} />
       <main className="max-w-7xl mx-auto">
+        <h2 className="js-header-fade mb-8 text-[#515f3c] text-sm md:text-base tracking-widest uppercase font-mono">
+          Projets d'architecture
+        </h2>
         <ProjectGrid projects={projects} />
       </main>
       <footer className="max-w-7xl mx-auto border-t border-neutral-200/60 mt-32 py-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono text-neutral-400">
