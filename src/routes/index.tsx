@@ -66,7 +66,7 @@ function HomeComponent() {
     >
       <HeroHeader name={siteConfig.name} architect={siteConfig.architect} />
       <main className="max-w-7xl mx-auto">
-        <h2 className="js-header-fade mb-8 text-[#515f3c] text-sm md:text-base tracking-widest uppercase font-mono">
+        <h2 className="js-header-fade mb-8 text-[#515f3c] text-sm md:text-2xl tracking-widest uppercase font-mono font-medium">
           Projets d'architecture
         </h2>
         <ProjectGrid projects={projects} />
