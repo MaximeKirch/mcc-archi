@@ -2,12 +2,13 @@ import { Link } from "@tanstack/react-router";
 
 interface HeroHeaderProps {
   name: string;
+  architect: string;
 }
 
 const linkClass =
   "no-underline text-xs font-mono uppercase tracking-wider !text-[#515f3c] border-b !border-[#515f3c] hover:!text-neutral-400 hover:!border-neutral-400 transition-colors pb-0.5 w-max";
 
-export function HeroHeader({ name }: HeroHeaderProps) {
+export function HeroHeader({ name, architect }: HeroHeaderProps) {
   const words = name.split(" ");
   const firstWord = words[0];
   const rest = words.slice(1).join(" ");
@@ -22,20 +23,20 @@ export function HeroHeader({ name }: HeroHeaderProps) {
               {rest}
             </span>
           </h1>
+          <p className="js-header-title mt-2 text-lg md:text-xl font-extralight tracking-tight text-[#515f3c]">
+            {architect}
+          </p>
         </div>
-        <div className="">
+        <div className="flex flex-col items-end lg:justify-self-end">
           <img
             src="/kaki_fullpage.svg"
             alt="Cuccasa"
             className="js-header-title h-16 md:h-22 w-auto"
-            style={{
-              justifySelf: "flex-end",
-              borderRadius: 0,
-            }}
+            style={{ borderRadius: 0 }}
           />
           <div className="js-header-fade hidden lg:flex lg:flex-col lg:items-end mt-8 gap-1 ">
-            <p className="text-[#515f3c] text-xs tracking-widest uppercase font-mono">
-              Atelier d'architecture — Evisa
+            <p className="mb-4 text-[#515f3c] text-xs tracking-widest uppercase font-mono">
+              Atelier d'architecture - EVISA | CORSE
             </p>
             <Link to="/contact" className={linkClass}>
               Nous contacter →
@@ -47,8 +48,8 @@ export function HeroHeader({ name }: HeroHeaderProps) {
         </div>
       </div>
       <div className="js-header-fade mt-4 lg:hidden flex flex-col gap-1">
-        <p className="text-[#515f3c] text-xs tracking-widest uppercase font-mono">
-          Atelier d'architecture — Evisa
+        <p className="mb-4 text-[#515f3c] text-xs tracking-widest uppercase font-mono">
+          Atelier d'architecture - EVISA | CORSE
         </p>
         <Link to="/contact" className={linkClass}>
           Nous contacter →
