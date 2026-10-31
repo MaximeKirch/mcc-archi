@@ -31,7 +31,7 @@ function normalizeProjectUrls(project: WordPressProject): WordPressProject {
 
 async function fetchProjects(): Promise<WordPressProject[]> {
   const response = await fetch(
-    `${siteConfig.apiUrl}/posts?${siteConfig.acfFormatParam}`,
+    `${siteConfig.apiUrl}/posts?per_page=100&orderby=menu_order&order=asc&${siteConfig.acfFormatParam}`,
   );
   if (!response.ok) {
     throw new Error("Erreur lors de la récupération des projets");
