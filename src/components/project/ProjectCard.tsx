@@ -15,7 +15,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       className="js-project-card group no-underline text-inherit flex flex-col"
     >
       <article className="flex flex-col h-full">
-        <div className="aspect-square w-full bg-neutral-100 overflow-hidden relative rounded-sm shadow-sm border border-neutral-200/40">
+        <div className="aspect-[8.5/10] w-full bg-neutral-100 overflow-hidden relative rounded-sm shadow-sm border border-neutral-200/40">
           {project.acf.architecture_cover_image ? (
             <img
               src={project.acf.architecture_cover_image}
