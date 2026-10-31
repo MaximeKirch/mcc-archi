@@ -47,8 +47,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
 
           <div className="flex items-center justify-between pt-3 mt-3 border-t border-neutral-100 text-[11px] font-mono text-neutral-400">
-            <span>{project.acf.architecture_surface} SQM</span>
-            <span className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+            {project.acf.architecture_surface ? (
+              <span>{project.acf.architecture_surface} SQM</span>
+            ) : null}
+            <span className="ml-auto opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
               VOIR LE PROJET →
             </span>
           </div>
