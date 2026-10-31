@@ -11,7 +11,7 @@ export function ContactHero() {
       </h1>
       <p className="js-contact-details text-neutral-500 font-light mt-8 text-base md:text-lg max-w-md leading-relaxed">
         Nous sommes toujours à la recherche de nouveaux défis architecturaux.
-        Partagez votre vision avec notre studio de Montréal.
+        Partagez votre vision avec notre studio à Evisa.
       </p>
     </div>
   );
