@@ -15,7 +15,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       className="js-project-card group no-underline text-inherit flex flex-col"
     >
       <article className="flex flex-col h-full">
-        <div className="aspect-square w-full bg-neutral-100 overflow-hidden relative rounded-sm shadow-sm border border-neutral-200/40">
+        <div className="aspect-[8.5/10] w-full bg-neutral-100 overflow-hidden relative rounded-sm shadow-sm border border-neutral-200/40">
           {project.acf.architecture_cover_image ? (
             <img
               src={project.acf.architecture_cover_image}
@@ -47,8 +47,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
 
           <div className="flex items-center justify-between pt-3 mt-3 border-t border-neutral-100 text-[11px] font-mono text-neutral-400">
-            <span>{project.acf.architecture_surface} SQM</span>
-            <span className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+            {project.acf.architecture_surface ? (
+              <span>{project.acf.architecture_surface} m²</span>
+            ) : null}
+            <span className="ml-auto opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
               VOIR LE PROJET →
             </span>
           </div>
