@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
-import { projectsQueryOptions } from "#/queries/projects.ts";
+import { postsQueryOptions } from "#/queries/projects.ts";
 import { homePageQueryOptions } from "#/queries/home.ts";
 import { asList } from "#/queries/pages.ts";
 import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
   component: HomeComponent,
   loader: async ({ context }) => {
     const [, page] = await Promise.all([
-      context.queryClient.ensureQueryData(projectsQueryOptions),
+      context.queryClient.ensureQueryData(postsQueryOptions),
       context.queryClient.ensureQueryData(homePageQueryOptions),
     ]);
     return { seo: page?.acf };
@@ -29,7 +29,9 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeComponent() {
-  const { data: projects } = useSuspenseQuery(projectsQueryOptions);
+  const {
+    data: { projets },
+  } = useSuspenseQuery(postsQueryOptions);
   const { data: page } = useSuspenseQuery(homePageQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -88,7 +90,7 @@ function HomeComponent() {
         <h2 className="js-header-fade text-kaki leading-none [text-box:trim-both_cap_alphabetic] text-sm md:text-2xl mb-8 mt-4 tracking-widest uppercase font-mono font-medium">
           Projets d'architecture
         </h2>
-        <ProjectGrid projects={projects} />
+        <ProjectGrid projects={projets} />
         <AccompanimentSection items={asList(page?.acf.accompagnement)} />
       </main>
       <SiteFooter className="pb-6 md:pb-4" />

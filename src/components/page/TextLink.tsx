@@ -9,14 +9,19 @@ interface TextLinkProps {
   href: string;
   children: React.ReactNode;
   className?: string;
+  newTab?: boolean;
 }
 
 // For hrefs typed by the client in WordPress: internal paths stay in the router.
-export function TextLink({ href, children, className }: TextLinkProps) {
+export function TextLink({ href, children, className, newTab }: TextLinkProps) {
   const classes = cn(textLinkClass, className);
   if (!href.startsWith("/")) {
     return (
-      <a href={href} className={classes}>
+      <a
+        href={href}
+        className={classes}
+        {...(newTab && { target: "_blank", rel: "noopener noreferrer" })}
+      >
         {children} →
       </a>
     );
