@@ -2,13 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
-import { gsap, useGSAP } from "#/lib/gsap.ts";
+import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
+import { seoMeta } from "#/lib/seo.ts";
 import { PageNav } from "#/components/page/PageNav.tsx";
+import { SiteFooter } from "#/components/page/SiteFooter.tsx";
 import { aboutPageQueryOptions } from "#/queries/about.ts";
 
-export const Route = createFileRoute("/about")({
+export const Route = createFileRoute("/atelier")({
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(aboutPageQueryOptions),
+  head: () => ({ meta: seoMeta(undefined, { title: `L'atelier | ${siteConfig.name}` }) }),
   component: AboutComponent,
 });
 
@@ -19,6 +22,7 @@ function AboutComponent() {
 
   useGSAP(
     () => {
+      if (prefersReducedMotion()) return;
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
       tl.from(".js-about-word", {
@@ -76,25 +80,7 @@ function AboutComponent() {
         />
       </main>
 
-      <footer className="max-w-7xl w-full mx-auto border-t border-neutral-200/60 px-6 py-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono text-neutral-400">
-        <div>© {new Date().getFullYear()} — {siteConfig.name}.</div>
-        <div className="flex gap-6">
-          <a
-            href="https://www.instagram.com/mcc_architecture/"
-            target="_blank"
-            className="hover:text-neutral-900 transition-colors"
-          >
-            INSTAGRAM
-          </a>
-          <a
-            href="https://www.linkedin.com/in/marie-coulombon-casanova/"
-            target="_blank"
-            className="hover:text-neutral-900 transition-colors"
-          >
-            LINKEDIN
-          </a>
-        </div>
-      </footer>
+      <SiteFooter className="px-6" />
     </div>
   );
 }

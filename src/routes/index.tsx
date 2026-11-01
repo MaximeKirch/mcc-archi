@@ -3,22 +3,39 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
 import { projectsQueryOptions } from "#/queries/projects.ts";
-import { gsap, useGSAP } from "#/lib/gsap.ts";
+import { homePageQueryOptions } from "#/queries/home.ts";
+import { asList } from "#/queries/pages.ts";
+import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
+import { seoMeta } from "#/lib/seo.ts";
 import { HeroHeader } from "#/components/page/HeroHeader.tsx";
+import { SiteFooter } from "#/components/page/SiteFooter.tsx";
 import { ProjectGrid } from "#/components/project/ProjectGrid.tsx";
+import { AccompanimentSection } from "#/components/home/AccompanimentSection.tsx";
 
 export const Route = createFileRoute("/")({
   component: HomeComponent,
-  loader: ({ context }) =>
-    context.queryClient.ensureQueryData(projectsQueryOptions),
+  loader: async ({ context }) => {
+    const [, page] = await Promise.all([
+      context.queryClient.ensureQueryData(projectsQueryOptions),
+      context.queryClient.ensureQueryData(homePageQueryOptions),
+    ]);
+    return { seo: page?.acf };
+  },
+  head: ({ loaderData }) => ({
+    meta: seoMeta(loaderData?.seo, {
+      title: `${siteConfig.name} | Atelier d'architecture en Corse`,
+    }),
+  }),
 });
 
 function HomeComponent() {
   const { data: projects } = useSuspenseQuery(projectsQueryOptions);
+  const { data: page } = useSuspenseQuery(homePageQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
+      if (prefersReducedMotion()) return;
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
       tl.from(".js-header-title", {
@@ -72,12 +89,9 @@ function HomeComponent() {
           Projets d'architecture
         </h2>
         <ProjectGrid projects={projects} />
+        <AccompanimentSection items={asList(page?.acf.accompagnement)} />
       </main>
-      <footer className="max-w-7xl min-[120rem]:max-w-[1800px] mx-auto border-t border-neutral-200/60 mt-32 py-12 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-mono text-neutral-400">
-        <div>
-          © {new Date().getFullYear()} — {siteConfig.name}.
-        </div>
-      </footer>
+      <SiteFooter className="pb-6 md:pb-4" />
     </div>
   );
 }
