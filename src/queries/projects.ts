@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { siteConfig } from "#/config/site.ts";
 import type WordPressProject from "#/types/wordpress.ts";
+import { decodeEntities } from "#/lib/utils.ts";
 
 const wpOrigin = new URL(siteConfig.apiUrl).origin;
 
@@ -12,6 +13,7 @@ function normalizeUrl(url: string | false): string | false {
 function normalizeProjectUrls(project: WordPressProject): WordPressProject {
   return {
     ...project,
+    title: { rendered: decodeEntities(project.title.rendered) },
     acf: {
       ...project.acf,
       architecture_cover_image: normalizeUrl(project.acf.architecture_cover_image) as string,

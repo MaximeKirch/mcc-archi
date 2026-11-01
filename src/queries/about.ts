@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { siteConfig } from "#/config/site.ts";
+import { decodeEntities } from "#/lib/utils.ts";
 
 export interface WordPressAboutPage {
   id: number;
@@ -14,7 +15,8 @@ async function fetchAboutPage(): Promise<WordPressAboutPage> {
   if (!response.ok) throw new Error("Erreur lors de la récupération de la page");
   const data: WordPressAboutPage[] = await response.json();
   if (!data.length) throw new Error("Page introuvable");
-  return data[0];
+  const page = data[0];
+  return { ...page, title: { rendered: decodeEntities(page.title.rendered) } };
 }
 
 export const aboutPageQueryOptions = queryOptions({

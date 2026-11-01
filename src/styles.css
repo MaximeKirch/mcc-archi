@@ -119,6 +119,7 @@
 
 @theme inline {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --color-kaki: #515f3c;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -224,16 +225,6 @@ body::after {
   mask-image: radial-gradient(circle at 50% 30%, black, transparent 78%);
 }
 
-a {
-  color: var(--lagoon-deep);
-  text-decoration-color: rgba(50, 143, 151, 0.4);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-}
-
-a:hover {
-  color: #246f76;
-}
 
 code {
   font-size: 0.9em;
@@ -296,8 +287,7 @@ pre code {
 }
 
 button,
-.island-shell,
-a {
+.island-shell {
   transition:
     background-color 180ms ease,
     color 180ms ease,
