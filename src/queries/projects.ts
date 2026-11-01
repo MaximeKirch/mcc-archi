@@ -2,13 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { siteConfig } from "#/config/site.ts";
 import type WordPressProject from "#/types/wordpress.ts";
 import { decodeEntities } from "#/lib/utils.ts";
-
-const wpOrigin = new URL(siteConfig.apiUrl).origin;
-
-function normalizeUrl(url: string | false): string | false {
-  if (!url) return false;
-  return url.replace(/^https?:\/\/[^/]+/, wpOrigin);
-}
+import { normalizeUrl } from "#/lib/wp.ts";
 
 function normalizeProjectUrls(project: WordPressProject): WordPressProject {
   return {
