@@ -4,9 +4,10 @@ import { cn } from "#/lib/utils.ts";
 interface HeroHeaderProps {
   name: string;
   architect: string;
+  intro?: string;
 }
 
-const intro =
+const DEFAULT_INTRO =
   "Studio d’architecture & de conception durable basé à Evisa. Accompagnement sur-mesure pour vos projets de vie et support.";
 
 const linkClass =
@@ -15,7 +16,7 @@ const linkClass =
 // 44px hit area without moving the border underline.
 const touchArea = "relative before:absolute before:inset-x-0 before:-inset-y-4";
 
-export function HeroHeader({ name, architect }: HeroHeaderProps) {
+export function HeroHeader({ name, architect, intro = DEFAULT_INTRO }: HeroHeaderProps) {
   const words = name.split(" ");
   const firstWord = words[0];
 
