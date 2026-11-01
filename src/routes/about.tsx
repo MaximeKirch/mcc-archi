@@ -54,10 +54,10 @@ function AboutComponent() {
       ref={containerRef}
       className="min-h-screen bg-neutral-50 text-neutral-900 font-sans antialiased flex flex-col"
     >
-      <PageNav backLabel="Portfolio" rightLabel="Atelier" />
+      <PageNav backLabel="Accueil" rightLabel="L'Atelier" />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-12 md:py-20">
-        <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter uppercase leading-[1.2] text-[#515f3c]">
+        <h1 className="text-5xl md:text-7xl font-semibold tracking-tighter [font-kerning:none] uppercase leading-[1.2] text-kaki">
           {words.map((word, i) => (
             <span
               key={i}
@@ -68,10 +68,10 @@ function AboutComponent() {
           ))}
         </h1>
 
-        <div className="js-about-line h-[1px] w-full bg-[#515f3c] mt-8 mb-12" />
+        <div className="js-about-line h-[1px] w-full bg-kaki mt-8 mb-12" />
 
         <div
-          className="js-about-content prose prose-neutral max-w-3xl prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-[#515f3c] prose-headings:uppercase prose-a:text-[#515f3c] prose-strong:text-[#515f3c] prose-p:text-neutral-700 prose-p:leading-relaxed"
+          className="js-about-content prose prose-neutral max-w-3xl prose-headings:font-semibold prose-headings:tracking-tight prose-headings:[font-kerning:none] prose-headings:text-kaki prose-headings:uppercase prose-a:text-kaki prose-strong:text-kaki prose-p:text-neutral-700 prose-p:leading-relaxed [&_blockquote_p]:before:content-none [&_blockquote_p]:after:content-none"
           dangerouslySetInnerHTML={{ __html: page.acf.about_description }}
         />
       </main>
