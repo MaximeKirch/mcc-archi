@@ -114,3 +114,16 @@ export interface SavoirFaireAcf {
 export interface PortfolioAcf {
   photo_hero: AcfImage;
 }
+
+export type SocialNetwork = "facebook" | "instagram" | "linkedin";
+
+export interface ContactAcf {
+  titre_ligne_1: string;
+  titre_ligne_2: string;
+  intro: string;
+  email: string;
+  telephone: string;
+  adresse: string;
+  mention_intervention: string;
+  reseaux: AcfList<{ reseau: SocialNetwork; url: string }>;
+}

@@ -1,18 +1,26 @@
-export function ContactHero() {
+import type { ContactAcf } from "#/types/wordpress.ts";
+
+const DEFAULT_TITLE = ["Échangeons sur", "votre projet."];
+
+export function ContactHero({ contact }: { contact: ContactAcf | null }) {
+  const light = contact?.titre_ligne_1 || DEFAULT_TITLE[0];
+  const bold = contact?.titre_ligne_2 || DEFAULT_TITLE[1];
+
   return (
-    <div className="lg:col-span-3 flex flex-col justify-center pr-0 lg:pr-12">
-      <h1 className="text-4xl md:text-6xl xl:text-7xl font-extralight tracking-tighter uppercase leading-[1.05] text-neutral-900">
-        <div className="overflow-hidden block py-1 js-contact-title">
-          <span className="block">Bâtissons votre</span>
-        </div>
-        <div className="overflow-hidden block py-1 js-contact-title">
-          <span className="block font-semibold">prochain espace.</span>
-        </div>
+    <>
+      <h1 className="text-[40px] leading-[44px] tracking-[-2px] md:text-7xl md:leading-[76px] md:tracking-[-3.6px] uppercase text-neutral-900 [font-kerning:none]">
+        <span className="js-contact-title block overflow-hidden">
+          <span className="block font-extralight">{light}</span>
+        </span>
+        <span className="js-contact-title block overflow-hidden">
+          <span className="block font-semibold">{bold}</span>
+        </span>
       </h1>
-      <p className="js-contact-details text-neutral-500 font-light mt-8 text-base md:text-lg max-w-md leading-relaxed">
-        Nous sommes toujours à la recherche de nouveaux défis architecturaux.
-        Partagez votre vision avec notre studio à Evisa.
-      </p>
-    </div>
+      {contact?.intro && (
+        <p className="js-contact-details mt-6 md:mt-8 max-w-[520px] text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-500">
+          {contact.intro}
+        </p>
+      )}
+    </>
   );
 }
