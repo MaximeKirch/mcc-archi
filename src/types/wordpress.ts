@@ -46,6 +46,7 @@ export interface AccompanimentItem {
 }
 
 export interface HomeAcf {
+  accroche: string;
   accompagnement: AcfList<AccompanimentItem>;
 }
 

@@ -85,7 +85,11 @@ function HomeComponent() {
       ref={containerRef}
       className="min-h-screen bg-neutral-50 text-neutral-900 p-4 md:p-8 font-sans antialiased selection:bg-neutral-200"
     >
-      <HeroHeader name={siteConfig.name} architect={siteConfig.architect} />
+      <HeroHeader
+        name={siteConfig.name}
+        architect={siteConfig.architect}
+        intro={page?.acf.accroche || undefined}
+      />
       <main className="max-w-7xl min-[120rem]:max-w-[1800px] mx-auto">
         <h2 className="js-header-fade text-kaki leading-none [text-box:trim-both_cap_alphabetic] text-sm md:text-2xl mb-8 mt-4 tracking-widest uppercase font-mono font-medium">
           Projets d'architecture
