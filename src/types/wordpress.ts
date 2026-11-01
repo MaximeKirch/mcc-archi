@@ -23,3 +23,27 @@ export default interface WordPressProject {
     image_10: string | false;
   };
 }
+
+export interface WordPressPage<Acf> {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  acf: Acf & SeoFields;
+}
+
+export interface SeoFields {
+  seo_titre: string;
+  seo_description: string;
+}
+
+export interface AccompanimentItem {
+  numero: string;
+  libelle: string;
+  texte: string;
+  texte_lien: string;
+  cible_lien: string;
+}
+
+export interface HomeAcf {
+  accompagnement: AccompanimentItem[] | false | "";
+}

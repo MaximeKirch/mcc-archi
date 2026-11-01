@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { gsap, useGSAP } from '#/lib/gsap.ts';
+import { gsap, prefersReducedMotion, useGSAP } from '#/lib/gsap.ts';
 
 interface ProjectGalleryProps {
   images: string[];
@@ -10,6 +10,7 @@ export function ProjectGallery({ images, projectTitle }: ProjectGalleryProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
+    if (prefersReducedMotion()) return;
     const items = sectionRef.current?.querySelectorAll('.gallery-item');
     if (!items?.length) return;
 
