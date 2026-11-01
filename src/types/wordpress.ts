@@ -45,5 +45,43 @@ export interface AccompanimentItem {
 }
 
 export interface HomeAcf {
-  accompagnement: AccompanimentItem[] | false | "";
+  accompagnement: AcfList<AccompanimentItem>;
+}
+
+export interface WordPressImage {
+  url: string;
+  alt: string;
+  width: number;
+  height: number;
+  sizes: Record<string, string | number>;
+}
+
+type AcfList<T> = T[] | false | "";
+type AcfImage = WordPressImage | false | null;
+
+export interface AtelierAcf {
+  photo_hero: AcfImage;
+  philosophie: {
+    accroche: string;
+    texte_principal: string;
+    texte_secondaire: string;
+    citation: string;
+    origine_nom: string;
+    piliers_intro: string;
+    piliers: AcfList<{ titre: string; texte: string }>;
+    corse: string;
+    diplomes: AcfList<{ lieu: string; intitule: string }>;
+    formations_pratiques: string;
+    ouverture_missions: string;
+  } | null;
+  particuliers: {
+    approche_collaborative: string;
+    missions: AcfList<{ libelle: string }>;
+  } | null;
+  agences: {
+    presentation: string;
+    missions: AcfList<{ libelle: string }>;
+    texte_portfolio: string;
+    email_portfolio: string;
+  } | null;
 }
