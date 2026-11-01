@@ -51,7 +51,7 @@ function ContactComponent() {
       ref={containerRef}
       className="min-h-screen bg-neutral-50 text-neutral-900 font-sans antialiased flex flex-col justify-between"
     >
-      <PageNav backLabel="Portfolio" rightLabel="Studio" />
+      <PageNav backLabel="Accueil" rightLabel="Contact" />
 
       <main className="max-w-7xl w-full mx-auto px-6 py-12 md:py-24 my-auto">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-8 items-stretch">

@@ -19,7 +19,7 @@ export function PageNav({
     >
       <Link
         to="/"
-        className="text-xs uppercase tracking-widest text-[#515f3c]! hover:text-neutral-400! transition-colors flex items-center gap-2"
+        className="text-xs uppercase tracking-widest text-kaki hover:text-neutral-400 transition-colors flex items-center gap-2"
       >
         ← {backLabel}
       </Link>
