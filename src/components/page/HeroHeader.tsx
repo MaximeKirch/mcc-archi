@@ -47,7 +47,7 @@ export function HeroHeader({ name, architect }: HeroHeaderProps) {
             <Link to="/atelier" className={cn(linkClass, "mb-2")}>
               L'atelier →
             </Link>
-            <Link to="/" className={cn(linkClass, "mb-2")}>
+            <Link to="/portfolio" className={cn(linkClass, "mb-2")}>
               Portfolio →
             </Link>
             <Link to="/contact" className={linkClass}>
@@ -67,7 +67,7 @@ export function HeroHeader({ name, architect }: HeroHeaderProps) {
           <Link to="/atelier" className={cn(linkClass, touchArea)}>
             L'atelier →
           </Link>
-          <Link to="/" className={cn(linkClass, touchArea)}>
+          <Link to="/portfolio" className={cn(linkClass, touchArea)}>
             Portfolio →
           </Link>
           <Link to="/contact" className={cn(linkClass, touchArea)}>

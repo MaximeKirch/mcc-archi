@@ -1,6 +1,7 @@
 export default interface WordPressProject {
   id: number;
   slug: string;
+  categories: number[];
   title: {
     rendered: string;
   };
@@ -84,4 +85,32 @@ export interface AtelierAcf {
     texte_portfolio: string;
     email_portfolio: string;
   } | null;
+}
+
+export interface WordPressPost<Acf> {
+  id: number;
+  slug: string;
+  categories: number[];
+  title: { rendered: string };
+  acf: Acf;
+}
+
+export interface MemoireAcf {
+  etiquette: string;
+  annee: string;
+  couverture: AcfImage;
+  resume: string;
+  pdf: { url: string; filename: string } | false | null;
+}
+
+export interface SavoirFaireAcf {
+  etiquette: string;
+  photo: AcfImage;
+  description: string;
+  dates: string;
+  lieu: string;
+}
+
+export interface PortfolioAcf {
+  photo_hero: AcfImage;
 }

@@ -2,14 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
-import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
 import { seoMeta } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
 import type { AtelierAcf } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
-import { PageHero } from "#/components/page/PageHero.tsx";
+import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import {
   MissionList,
   Paragraphs,
@@ -209,39 +208,7 @@ function AtelierComponent() {
     { id: "agences", title: "Collaboration d’agences", rows: agencesRows(page?.acf.agences ?? null) },
   ].filter((section) => section.rows.length > 0);
 
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-
-      tl.from(".js-hero-word", {
-        y: "110%",
-        duration: 1.1,
-        stagger: 0.08,
-      })
-        .from(
-          ".js-hero-line",
-          {
-            scaleX: 0,
-            transformOrigin: "left center",
-            duration: 1.4,
-            ease: "power3.inOut",
-          },
-          "-=0.7",
-        )
-        .from(
-          ".js-hero-fade",
-          {
-            opacity: 0,
-            y: 30,
-            duration: 1,
-            stagger: 0.15,
-          },
-          "-=0.8",
-        );
-    },
-    { scope: containerRef },
-  );
+  usePageHeroAnimation(containerRef);
 
   return (
     <PageShell ref={containerRef} navLabel="L'Atelier">
