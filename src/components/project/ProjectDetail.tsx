@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import type WordPressProject from "#/types/wordpress.ts";
-import { gsap, useGSAP } from "#/lib/gsap.ts";
+import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
 import { siteConfig } from "#/config/site.ts";
 import { PageNav } from "../page/PageNav.tsx";
 import { ProjectSpecs } from "./ProjectSpecs.tsx";
@@ -30,6 +30,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
   const imgRef = useRef<HTMLImageElement>(null);
 
   useGSAP(() => {
+    if (prefersReducedMotion()) return;
     const tl = gsap.timeline();
 
     tl.fromTo(

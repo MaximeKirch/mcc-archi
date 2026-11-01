@@ -1,5 +1,5 @@
 import { Fragment, useRef } from 'react';
-import { gsap, useGSAP } from '#/lib/gsap.ts';
+import { gsap, prefersReducedMotion, useGSAP } from '#/lib/gsap.ts';
 
 interface AnimatedTitleProps {
   title: string;
@@ -12,6 +12,7 @@ export function AnimatedTitle({ title, className = '', delay = 0 }: AnimatedTitl
   const words = title.split(' ');
 
   useGSAP(() => {
+    if (prefersReducedMotion()) return;
     gsap.from(ref.current!.querySelectorAll('.word-inner'), {
       y: '110%',
       duration: 0.9,
