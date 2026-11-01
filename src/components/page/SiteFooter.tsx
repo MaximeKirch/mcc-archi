@@ -1,7 +1,14 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { siteConfig } from "#/config/site.ts";
 import { cn } from "#/lib/utils.ts";
+import { contactPageQueryOptions } from "#/queries/contact.ts";
+import { asList } from "#/queries/pages.ts";
+import { SOCIAL_LABELS } from "#/components/contact/SocialIcon.tsx";
 
 export function SiteFooter({ className }: { className?: string }) {
+  const { data: contact } = useSuspenseQuery(contactPageQueryOptions);
+  const reseaux = asList(contact?.acf.reseaux).filter((r) => r.url);
+
   return (
     <footer
       className={cn(
@@ -12,19 +19,21 @@ export function SiteFooter({ className }: { className?: string }) {
       <span>
         © {new Date().getFullYear()} — {siteConfig.name}.
       </span>
-      <span className="flex gap-6">
-        {siteConfig.socials.map(({ label, href }) => (
-          <a
-            key={label}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center min-h-11 md:min-h-0 underline hover:text-neutral-900 transition-colors"
-          >
-            {label}
-          </a>
-        ))}
-      </span>
+      {reseaux.length > 0 && (
+        <span className="flex gap-6">
+          {reseaux.map(({ reseau, url }) => (
+            <a
+              key={url}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center min-h-11 md:min-h-0 underline hover:text-neutral-900 transition-colors"
+            >
+              {SOCIAL_LABELS[reseau]}
+            </a>
+          ))}
+        </span>
+      )}
     </footer>
   );
 }

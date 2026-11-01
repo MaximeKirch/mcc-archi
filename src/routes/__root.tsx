@@ -9,12 +9,16 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 import type { QueryClient } from '@tanstack/react-query'
 import { siteConfig } from '../config/site'
+import { contactPageQueryOptions } from '../queries/contact'
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  // Footer social links on every page.
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(contactPageQueryOptions),
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
