@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { cn } from "#/lib/utils.ts";
+import type { HomeLabels } from "#/config/labels.ts";
 
 interface HeroHeaderProps {
   name: string;
   architect: string;
   intro?: string;
+  labels: HomeLabels;
 }
 
 const DEFAULT_INTRO =
@@ -16,7 +18,7 @@ const linkClass =
 // 44px hit area without moving the border underline.
 const touchArea = "relative before:absolute before:inset-x-0 before:-inset-y-4";
 
-export function HeroHeader({ name, architect, intro = DEFAULT_INTRO }: HeroHeaderProps) {
+export function HeroHeader({ name, architect, intro = DEFAULT_INTRO, labels }: HeroHeaderProps) {
   const words = name.split(" ");
   const firstWord = words[0];
 
@@ -28,7 +30,7 @@ export function HeroHeader({ name, architect, intro = DEFAULT_INTRO }: HeroHeade
             {firstWord}{" "}
           </h1>
           <p className="js-header-title mb-4 mt-6 text-kaki text-sm tracking-[0.065em] uppercase font-mono ">
-            {architect} | Architecte DE/HMONP
+            {architect} | {labels.titre_architecte}
           </p>
           <p className="js-header-fade hidden lg:block mt-auto w-[436px] text-sm leading-[25px] font-light text-neutral-700 text-justify">
             {intro}
@@ -43,36 +45,36 @@ export function HeroHeader({ name, architect, intro = DEFAULT_INTRO }: HeroHeade
           />
           <div className="js-header-fade hidden lg:flex lg:flex-col lg:items-end mt-8 gap-1 ">
             <p className="mb-4 text-kaki text-sm tracking-widest uppercase font-mono leading-none [text-box:trim-both_cap_alphabetic]">
-              Atelier d'architecture - EVISA | CORSE
+              {labels.localisation}
             </p>
             <Link to="/atelier" className={cn(linkClass, "mb-2")}>
-              L'atelier →
+              {labels.lien_atelier} →
             </Link>
             <Link to="/portfolio" className={cn(linkClass, "mb-2")}>
-              Portfolio →
+              {labels.lien_portfolio} →
             </Link>
             <Link to="/contact" className={linkClass}>
-              Nous contacter →
+              {labels.lien_contact} →
             </Link>
           </div>
         </div>
       </div>
       <div className="js-header-fade mt-4 lg:hidden flex flex-col gap-1">
         <p className="mb-4 text-kaki text-sm tracking-widest uppercase font-mono">
-          Atelier d'architecture - EVISA | CORSE
+          {labels.localisation}
         </p>
         <p className="mb-3 text-[15px] leading-[22px] font-light text-neutral-700">
           {intro}
         </p>
         <nav aria-label="Navigation principale" className="flex flex-col gap-8 py-4">
           <Link to="/atelier" className={cn(linkClass, touchArea)}>
-            L'atelier →
+            {labels.lien_atelier} →
           </Link>
           <Link to="/portfolio" className={cn(linkClass, touchArea)}>
-            Portfolio →
+            {labels.lien_portfolio} →
           </Link>
           <Link to="/contact" className={cn(linkClass, touchArea)}>
-            Nous contacter →
+            {labels.lien_contact} →
           </Link>
         </nav>
       </div>

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
+import { HOME_LABELS, withDefaults } from "#/config/labels.ts";
 import { projectsQueryOptions } from "#/queries/projects.ts";
 import { homePageQueryOptions } from "#/queries/home.ts";
 import { asList } from "#/queries/pages.ts";
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/")({
 function HomeComponent() {
   const { data: projets } = useSuspenseQuery(projectsQueryOptions);
   const { data: page } = useSuspenseQuery(homePageQueryOptions);
+  const labels = withDefaults(page?.acf.libelles, HOME_LABELS);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -87,13 +89,17 @@ function HomeComponent() {
         name={siteConfig.name}
         architect={siteConfig.architect}
         intro={page?.acf.accroche || undefined}
+        labels={labels}
       />
       <main className="max-w-7xl min-[120rem]:max-w-[1800px] mx-auto">
         <h2 className="js-header-fade text-kaki leading-none [text-box:trim-both_cap_alphabetic] text-sm md:text-2xl mb-8 mt-4 tracking-widest uppercase font-mono font-medium">
-          Projets d'architecture
+          {labels.titre_projets}
         </h2>
         <ProjectGrid projects={projets} />
-        <AccompanimentSection items={asList(page?.acf.accompagnement)} />
+        <AccompanimentSection
+          title={labels.titre_accompagnement}
+          items={asList(page?.acf.accompagnement)}
+        />
       </main>
       <SiteFooter className="pb-6 md:pb-4" />
     </div>

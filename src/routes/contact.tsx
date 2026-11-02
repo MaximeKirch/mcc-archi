@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
+import { CONTACT_LABELS, withDefaults } from "#/config/labels.ts";
 import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
 import { seoMeta } from "#/lib/seo.ts";
 import { contactPageQueryOptions } from "#/queries/contact.ts";
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/contact")({
 function ContactComponent() {
   const { data: page } = useSuspenseQuery(contactPageQueryOptions);
   const contact = page?.acf ?? null;
+  const labels = withDefaults(contact?.libelles, CONTACT_LABELS);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -58,9 +60,9 @@ function ContactComponent() {
       <div className="mt-14 md:mt-30 lg:grid lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="lg:pr-16">
           <ContactHero contact={contact} />
-          <ContactForm fallbackEmail={contact?.email ?? ""} />
+          <ContactForm fallbackEmail={contact?.email ?? ""} labels={labels} />
         </div>
-        <ContactDetails contact={contact} />
+        <ContactDetails contact={contact} labels={labels} />
       </div>
     </PageShell>
   );
