@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "Cuccà[sa] Architettura",
   architect: "Marie Coulombon-Casanova",
   description:
-    "Studio d'architecture et de conception durable basé à Evisa, en Corse. Accompagnement sur-mesure des particuliers et des agences d'architecture.",
+    "Un atelier pluridisciplinaire pour accompagner, analyser, et réaliser vos projets en faveur d'une architecture locale et singulière.",
   apiUrl: env.VITE_WP_API_URL,
   acfFormatParam: "acf_format=standard",
 };
