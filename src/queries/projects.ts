@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+import { notFound } from "@tanstack/react-router";
 import { siteConfig } from "#/config/site.ts";
 import type WordPressProject from "#/types/wordpress.ts";
 import type {
@@ -99,7 +100,7 @@ async function fetchProjectBySlug(slug: string): Promise<WordPressProject> {
   }
   const data: WordPressProject[] = await response.json();
   if (data.length === 0) {
-    throw new Error("Projet introuvable");
+    throw notFound();
   }
   return normalizeProjectUrls(data[0]);
 }
