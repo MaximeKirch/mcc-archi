@@ -30,7 +30,7 @@ export function HeroHeader({ name, architect, intro = DEFAULT_INTRO }: HeroHeade
           <p className="js-header-title mb-4 mt-6 text-kaki text-sm tracking-[0.065em] uppercase font-mono ">
             {architect} | Architecte DE/HMONP
           </p>
-          <p className="js-header-fade hidden lg:block mt-auto w-[436px] text-sm leading-[25px] font-light text-neutral-700 text-justify">
+          <p className="js-header-fade hidden lg:block mt-auto w-[436px] text-sm leading-[25px] font-light text-neutral-700 text-justify [text-align-last:justify]">
             {intro}
           </p>
         </div>

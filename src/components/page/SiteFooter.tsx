@@ -1,12 +1,13 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { siteConfig } from "#/config/site.ts";
 import { cn } from "#/lib/utils.ts";
 import { contactPageQueryOptions } from "#/queries/contact.ts";
 import { asList } from "#/queries/pages.ts";
 import { SOCIAL_LABELS } from "#/components/contact/SocialIcon.tsx";
 
+// Not suspense: the footer also renders on error pages, when the API may be down.
 export function SiteFooter({ className }: { className?: string }) {
-  const { data: contact } = useSuspenseQuery(contactPageQueryOptions);
+  const { data: contact } = useQuery(contactPageQueryOptions);
   const reseaux = asList(contact?.acf.reseaux).filter((r) => r.url);
 
   return (
