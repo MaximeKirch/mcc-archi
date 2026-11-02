@@ -14,7 +14,7 @@ interface PageHeroProps {
 export function PageHero({ title, image, anchors }: PageHeroProps) {
   return (
     <>
-      <h1 className="mt-12 md:mt-24 text-[44px] leading-[52px] tracking-[-2px] md:text-7xl md:leading-[86px] md:tracking-[-3.6px] font-semibold uppercase text-kaki [font-kerning:none]">
+      <h1 className="mt-12 md:mt-16 text-[44px] leading-[52px] tracking-[-2px] md:text-7xl md:leading-[86px] md:tracking-[-3.6px] font-semibold uppercase text-kaki [font-kerning:none]">
         {title.split(" ").map((word, i) => (
           <span key={i} className="inline-block overflow-hidden mr-[0.3em] last:mr-0">
             <span className="js-hero-word inline-block">{word}</span>
