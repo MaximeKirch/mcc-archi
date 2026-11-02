@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import type WordPressProject from "#/types/wordpress.ts";
+import type { ProjectLabels } from "#/config/labels.ts";
 import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
 import { siteConfig } from "#/config/site.ts";
 import { PageNav } from "../page/PageNav.tsx";
@@ -9,6 +10,7 @@ import { AnimatedTitle } from "./AnimatedTitle.tsx";
 
 interface ProjectDetailProps {
   project: WordPressProject;
+  labels: ProjectLabels;
 }
 
 function getGallery(project: WordPressProject): string[] {
@@ -22,7 +24,7 @@ function getGallery(project: WordPressProject): string[] {
   ].filter((img): img is string => typeof img === "string" && img !== "");
 }
 
-export function ProjectDetail({ project }: ProjectDetailProps) {
+export function ProjectDetail({ project, labels }: ProjectDetailProps) {
   const gallery = getGallery(project);
   const title = project.acf.title || project.title.rendered;
 
@@ -52,8 +54,8 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900 font-sans antialiased">
       <PageNav
-        backLabel="Retour aux projets"
-        rightLabel={`Projet / ${project.acf.title}`}
+        backLabel={labels.retour}
+        rightLabel={`${labels.prefixe} / ${project.acf.title}`}
         sticky
       />
 
@@ -70,7 +72,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-neutral-900 text-neutral-500">
-            Aucun visuel de couverture disponible
+            {labels.sans_couverture}
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/20 to-transparent pointer-events-none" />
@@ -93,6 +95,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             localisation={project.acf.architecture_localisation}
             annee={project.acf.annee}
             surface={project.acf.architecture_surface}
+            labels={labels}
           />
         </div>
 

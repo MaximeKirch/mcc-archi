@@ -1,3 +1,5 @@
+import type { ContactLabels, HomeLabels, ProjectLabels } from "#/config/labels.ts";
+
 export default interface WordPressProject {
   id: number;
   slug: string;
@@ -48,6 +50,7 @@ export interface AccompanimentItem {
 export interface HomeAcf {
   accroche: string;
   accompagnement: AcfList<AccompanimentItem>;
+  libelles?: Partial<HomeLabels>;
 }
 
 export interface WordPressImage {
@@ -122,6 +125,7 @@ export type PortfolioSection = AcfSection &
 export interface PortfolioAcf {
   photo_hero: AcfImage;
   sections: AcfList<PortfolioSection>;
+  libelles_projet?: Partial<ProjectLabels>;
 }
 
 export type SocialNetwork = "facebook" | "instagram" | "linkedin";
@@ -135,4 +139,5 @@ export interface ContactAcf {
   adresse: string;
   mention_intervention: string;
   reseaux: AcfList<{ reseau: SocialNetwork; url: string }>;
+  libelles?: Partial<ContactLabels>;
 }
