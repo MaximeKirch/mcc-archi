@@ -2,9 +2,9 @@ import { asList } from "#/queries/pages.ts";
 import type { ContactAcf } from "#/types/wordpress.ts";
 import { SOCIAL_LABELS, SocialIcon } from "./SocialIcon.tsx";
 
-function InfoBlock({ label, children }: { label: string; children: React.ReactNode }) {
+function InfoBlock({ label, children, extendedClassName }: { label: string; children?: React.ReactNode; extendedClassName?: string }) {
   return (
-    <div className="js-contact-details">
+    <div className={`js-contact-details ${extendedClassName || ""}`}>
       <h2 className="font-mono text-[10px] tracking-[1.2px] uppercase text-neutral-500">
         {label}
       </h2>
@@ -43,19 +43,16 @@ export function ContactDetails({ contact }: { contact: ContactAcf | null }) {
         </InfoBlock>
       )}
 
-      {(contact.adresse || contact.mention_intervention) && (
-        <InfoBlock label="Studio & localisation">
-          {contact.adresse && (
-            <address className="mt-1.5 not-italic whitespace-pre-line text-base leading-6 font-light text-neutral-800">
-              {contact.adresse}
-            </address>
-          )}
-          {contact.mention_intervention && (
-            <p className="mt-1 text-sm leading-[21px] font-light text-neutral-500">
-              ({contact.mention_intervention})
-            </p>
-          )}
+      {contact.adresse && (
+        <InfoBlock label="Adresse">
+          <address className="mt-1.5 not-italic whitespace-pre-line text-base leading-6 font-light text-neutral-800">
+            {contact.adresse}
+          </address>
         </InfoBlock>
+      )}
+
+      {contact.mention_intervention && (
+        <InfoBlock label={contact.mention_intervention} extendedClassName="mt-1.5" />
       )}
 
       {reseaux.length > 0 && (
