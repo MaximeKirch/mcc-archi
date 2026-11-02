@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
-import { postsQueryOptions } from "#/queries/projects.ts";
+import { projectsQueryOptions } from "#/queries/projects.ts";
 import { homePageQueryOptions } from "#/queries/home.ts";
 import { asList } from "#/queries/pages.ts";
 import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
@@ -16,7 +16,7 @@ export const Route = createFileRoute("/")({
   component: HomeComponent,
   loader: async ({ context }) => {
     const [, page] = await Promise.all([
-      context.queryClient.ensureQueryData(postsQueryOptions),
+      context.queryClient.ensureQueryData(projectsQueryOptions),
       context.queryClient.ensureQueryData(homePageQueryOptions),
     ]);
     return { seo: page?.acf };
@@ -29,9 +29,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeComponent() {
-  const {
-    data: { projets },
-  } = useSuspenseQuery(postsQueryOptions);
+  const { data: projets } = useSuspenseQuery(projectsQueryOptions);
   const { data: page } = useSuspenseQuery(homePageQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
 

@@ -5,7 +5,11 @@ import { siteConfig } from "#/config/site.ts";
 import { seoMeta } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { portfolioPageQueryOptions } from "#/queries/portfolio.ts";
-import { postsQueryOptions } from "#/queries/projects.ts";
+import { projectsQueryOptions } from "#/queries/projects.ts";
+import { asList } from "#/queries/pages.ts";
+import { sectionIds } from "#/lib/utils.ts";
+import type WordPressProject from "#/types/wordpress.ts";
+import type { PortfolioSection } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import { Section } from "#/components/page/Section.tsx";
@@ -19,7 +23,7 @@ export const Route = createFileRoute("/portfolio")({
   loader: async ({ context }) => {
     const [page] = await Promise.all([
       context.queryClient.ensureQueryData(portfolioPageQueryOptions),
-      context.queryClient.ensureQueryData(postsQueryOptions),
+      context.queryClient.ensureQueryData(projectsQueryOptions),
     ]);
     return { seo: page?.acf };
   },
@@ -36,48 +40,60 @@ export const Route = createFileRoute("/portfolio")({
 // Grids sit 28px (mobile) / 40px below the section title.
 const gridSpacing = "mt-3 md:mt-4";
 
+// Used while the page has no sections in WordPress.
+const DEFAULT_SECTIONS: PortfolioSection[] = [
+  { acf_fc_layout: "projets", titre: "Projets & Réalisations", ancre: "projets" },
+];
+
+// Null when the section has nothing to show.
+function sectionContent(section: PortfolioSection, projets: WordPressProject[]): React.ReactNode {
+  switch (section.acf_fc_layout) {
+    case "projets":
+      if (!projets.length) return null;
+      return (
+        <div className={gridSpacing}>
+          <ProjectGrid projects={projets} />
+        </div>
+      );
+    case "recherches": {
+      const fiches = asList(section.fiches);
+      if (!fiches.length) return null;
+      return (
+        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 gap-8`}>
+          {fiches.map((fiche, i) => (
+            <RechercheCard key={i} fiche={fiche} linkLabel={section.texte_lien} />
+          ))}
+        </div>
+      );
+    }
+    case "savoir_faire": {
+      const fiches = asList(section.fiches);
+      if (!fiches.length) return null;
+      return (
+        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`}>
+          {fiches.map((fiche, i) => (
+            <SavoirFaireCard key={i} fiche={fiche} />
+          ))}
+        </div>
+      );
+    }
+    default:
+      return null;
+  }
+}
+
 function PortfolioComponent() {
   const { data: page } = useSuspenseQuery(portfolioPageQueryOptions);
-  const { data: posts } = useSuspenseQuery(postsQueryOptions);
+  const { data: projets } = useSuspenseQuery(projectsQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
   usePageHeroAnimation(containerRef);
 
-  const sections = [
-    {
-      id: "projets",
-      title: "Projets & Réalisations",
-      count: posts.projets.length,
-      content: (
-        <div className={gridSpacing}>
-          <ProjectGrid projects={posts.projets} />
-        </div>
-      ),
-    },
-    {
-      id: "recherches",
-      title: "Recherches & Mémoires",
-      count: posts.recherches.length,
-      content: (
-        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 gap-8`}>
-          {posts.recherches.map((post) => (
-            <RechercheCard key={post.id} post={post} />
-          ))}
-        </div>
-      ),
-    },
-    {
-      id: "savoir-faire",
-      title: "Savoir-faire & Matériaux",
-      count: posts.savoirFaire.length,
-      content: (
-        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`}>
-          {posts.savoirFaire.map((post) => (
-            <SavoirFaireCard key={post.id} post={post} />
-          ))}
-        </div>
-      ),
-    },
-  ].filter((section) => section.count > 0);
+  const configured = asList(page?.acf.sections);
+  const visible = (configured.length ? configured : DEFAULT_SECTIONS)
+    .map((section) => ({ ...section, content: sectionContent(section, projets) }))
+    .filter((section) => section.content);
+  const ids = sectionIds(visible);
+  const sections = visible.map((section, i) => ({ ...section, id: ids[i], title: section.titre }));
 
   return (
     <PageShell ref={containerRef} navLabel="Portfolio">
