@@ -6,6 +6,10 @@ import { seoMeta } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { portfolioPageQueryOptions } from "#/queries/portfolio.ts";
 import { postsQueryOptions } from "#/queries/projects.ts";
+import type { PortfolioPosts } from "#/queries/projects.ts";
+import { asList } from "#/queries/pages.ts";
+import { sectionIds } from "#/lib/utils.ts";
+import type { PortfolioSection } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import { Section } from "#/components/page/Section.tsx";
@@ -36,48 +40,63 @@ export const Route = createFileRoute("/portfolio")({
 // Grids sit 28px (mobile) / 40px below the section title.
 const gridSpacing = "mt-3 md:mt-4";
 
+// Used while the page has no sections in WordPress.
+const DEFAULT_SECTIONS: PortfolioSection[] = [
+  { acf_fc_layout: "projets", titre: "Projets & Réalisations", ancre: "projets" },
+  {
+    acf_fc_layout: "recherches",
+    titre: "Recherches & Mémoires",
+    ancre: "recherches",
+    texte_lien: "",
+  },
+  { acf_fc_layout: "savoir_faire", titre: "Savoir-faire & Matériaux", ancre: "savoir-faire" },
+];
+
+// Null when the section has no post.
+function sectionContent(section: PortfolioSection, posts: PortfolioPosts): React.ReactNode {
+  switch (section.acf_fc_layout) {
+    case "projets":
+      if (!posts.projets.length) return null;
+      return (
+        <div className={gridSpacing}>
+          <ProjectGrid projects={posts.projets} />
+        </div>
+      );
+    case "recherches":
+      if (!posts.recherches.length) return null;
+      return (
+        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 gap-8`}>
+          {posts.recherches.map((post) => (
+            <RechercheCard key={post.id} post={post} linkLabel={section.texte_lien} />
+          ))}
+        </div>
+      );
+    case "savoir_faire":
+      if (!posts.savoirFaire.length) return null;
+      return (
+        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`}>
+          {posts.savoirFaire.map((post) => (
+            <SavoirFaireCard key={post.id} post={post} />
+          ))}
+        </div>
+      );
+    default:
+      return null;
+  }
+}
+
 function PortfolioComponent() {
   const { data: page } = useSuspenseQuery(portfolioPageQueryOptions);
   const { data: posts } = useSuspenseQuery(postsQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
   usePageHeroAnimation(containerRef);
 
-  const sections = [
-    {
-      id: "projets",
-      title: "Projets & Réalisations",
-      count: posts.projets.length,
-      content: (
-        <div className={gridSpacing}>
-          <ProjectGrid projects={posts.projets} />
-        </div>
-      ),
-    },
-    {
-      id: "recherches",
-      title: "Recherches & Mémoires",
-      count: posts.recherches.length,
-      content: (
-        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 gap-8`}>
-          {posts.recherches.map((post) => (
-            <RechercheCard key={post.id} post={post} />
-          ))}
-        </div>
-      ),
-    },
-    {
-      id: "savoir-faire",
-      title: "Savoir-faire & Matériaux",
-      count: posts.savoirFaire.length,
-      content: (
-        <div className={`${gridSpacing} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8`}>
-          {posts.savoirFaire.map((post) => (
-            <SavoirFaireCard key={post.id} post={post} />
-          ))}
-        </div>
-      ),
-    },
-  ].filter((section) => section.count > 0);
+  const configured = asList(page?.acf.sections);
+  const visible = (configured.length ? configured : DEFAULT_SECTIONS)
+    .map((section) => ({ ...section, content: sectionContent(section, posts) }))
+    .filter((section) => section.content);
+  const ids = sectionIds(visible);
+  const sections = visible.map((section, i) => ({ ...section, id: ids[i], title: section.titre }));
 
   return (
     <PageShell ref={containerRef} navLabel="Portfolio">

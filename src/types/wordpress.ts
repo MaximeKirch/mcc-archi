@@ -61,31 +61,37 @@ export interface WordPressImage {
 type AcfList<T> = T[] | false | "";
 type AcfImage = WordPressImage | false | null;
 
+// Flexible content row: `acf_fc_layout` names the layout.
+interface AcfSection {
+  titre: string;
+  ancre: string;
+}
+
+export type AtelierBloc = { titre: string } & (
+  | {
+      acf_fc_layout: "presentation";
+      accroche: string;
+      texte_principal: string;
+      texte_secondaire: string;
+      citation: string;
+      texte_final: string;
+    }
+  | { acf_fc_layout: "texte"; texte: string; texte_lien: string; cible_lien: string }
+  | { acf_fc_layout: "liste"; intro: string; elements: AcfList<{ titre: string; texte: string }> }
+  | { acf_fc_layout: "texte_riche"; contenu: string }
+  | { acf_fc_layout: "diplomes"; elements: AcfList<{ lieu: string; intitule: string }> }
+  | { acf_fc_layout: "missions"; elements: AcfList<{ libelle: string }> }
+  | { acf_fc_layout: "encadre"; texte: string; texte_bouton: string; email: string }
+);
+
+export interface AtelierSection extends AcfSection {
+  acf_fc_layout: "section";
+  blocs: AcfList<AtelierBloc>;
+}
+
 export interface AtelierAcf {
   photo_hero: AcfImage;
-  philosophie: {
-    accroche: string;
-    texte_principal: string;
-    texte_secondaire: string;
-    citation: string;
-    origine_nom: string;
-    piliers_intro: string;
-    piliers: AcfList<{ titre: string; texte: string }>;
-    corse: string;
-    diplomes: AcfList<{ lieu: string; intitule: string }>;
-    formations_pratiques: string;
-    ouverture_missions: string;
-  } | null;
-  particuliers: {
-    approche_collaborative: string;
-    missions: AcfList<{ libelle: string }>;
-  } | null;
-  agences: {
-    presentation: string;
-    missions: AcfList<{ libelle: string }>;
-    texte_portfolio: string;
-    email_portfolio: string;
-  } | null;
+  sections: AcfList<AtelierSection>;
 }
 
 export interface WordPressPost<Acf> {
@@ -112,8 +118,16 @@ export interface SavoirFaireAcf {
   lieu: string;
 }
 
+export type PortfolioSection = AcfSection &
+  (
+    | { acf_fc_layout: "projets" }
+    | { acf_fc_layout: "recherches"; texte_lien: string }
+    | { acf_fc_layout: "savoir_faire" }
+  );
+
 export interface PortfolioAcf {
   photo_hero: AcfImage;
+  sections: AcfList<PortfolioSection>;
 }
 
 export type SocialNetwork = "facebook" | "instagram" | "linkedin";

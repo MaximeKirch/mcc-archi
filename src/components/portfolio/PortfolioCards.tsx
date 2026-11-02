@@ -43,7 +43,13 @@ function Card({ image, imageClass, sizes, meta, title, text, children }: CardPro
   );
 }
 
-export function RechercheCard({ post }: { post: WordPressPost<MemoireAcf> }) {
+export function RechercheCard({
+  post,
+  linkLabel,
+}: {
+  post: WordPressPost<MemoireAcf>;
+  linkLabel?: string;
+}) {
   const pdf = post.acf.pdf ? normalizeUrl(post.acf.pdf.url) : false;
   return (
     <Card
@@ -56,7 +62,7 @@ export function RechercheCard({ post }: { post: WordPressPost<MemoireAcf> }) {
     >
       {pdf && (
         <TextLink href={pdf} newTab className="md:mt-3">
-          Consulter le mémoire
+          {linkLabel || "Consulter le mémoire"}
         </TextLink>
       )}
     </Card>

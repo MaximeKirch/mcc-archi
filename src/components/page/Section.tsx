@@ -27,10 +27,12 @@ interface SectionRowProps {
 export function SectionRow({ label, children }: SectionRowProps) {
   return (
     <div className="py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12">
-      <h3 className="mb-3.5 md:mb-0 md:mt-1.5 font-mono text-[11px] leading-4 tracking-[1.4px] uppercase text-neutral-500">
-        {label}
-      </h3>
-      <div className="max-w-[760px]">{children}</div>
+      {label && (
+        <h3 className="mb-3.5 md:mb-0 md:mt-1.5 font-mono text-[11px] leading-4 tracking-[1.4px] uppercase text-neutral-500">
+          {label}
+        </h3>
+      )}
+      <div className="md:col-start-2 max-w-[760px]">{children}</div>
     </div>
   );
 }
@@ -38,8 +40,8 @@ export function SectionRow({ label, children }: SectionRowProps) {
 export function MissionList({ items }: { items: string[] }) {
   return (
     <ul className="list-disc pl-[18px] md:pl-5 text-[15px] leading-[26px] md:text-base md:leading-7 font-light text-neutral-700 md:grid md:grid-flow-col md:grid-rows-[repeat(4,auto)] md:auto-cols-fr md:gap-x-12">
-      {items.map((item) => (
-        <li key={item} className="mb-1.5">
+      {items.map((item, i) => (
+        <li key={i} className="mb-1.5">
           {item}
         </li>
       ))}
