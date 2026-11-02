@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { PROFILS, contactSchema } from "#/lib/contact.ts";
+import { contactSchema } from "#/lib/contact.ts";
 import type { ContactInput, ContactStatus } from "#/lib/contact.ts";
 import { sendContactMessage } from "#/server/contact.ts";
+import type { ContactLabels } from "#/config/labels.ts";
 
 type Field = "nom" | "email" | "profil" | "message";
 type Errors = Partial<Record<Field, string>>;
@@ -19,7 +20,13 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
+export function ContactForm({
+  fallbackEmail,
+  labels,
+}: {
+  fallbackEmail: string;
+  labels: ContactLabels;
+}) {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<ContactStatus | "sending" | null>(null);
 
@@ -54,12 +61,13 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
   if (status === "sent") {
     return (
       <p role="status" className="mt-8 md:mt-12 max-w-[640px] text-lg leading-7 font-light text-neutral-800">
-        Merci, votre message a bien été envoyé. Le studio vous répondra dans les meilleurs délais.
+        {labels.confirmation}
       </p>
     );
   }
 
   const describedBy = (field: Field) => (errors[field] ? `${field}-error` : undefined);
+  const profils = { particulier: labels.profil_particulier, agence: labels.profil_agence };
 
   return (
     <form
@@ -68,12 +76,12 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
       className="js-contact-details flex flex-col gap-5 md:gap-6 mt-8 md:mt-12 max-w-[640px]"
     >
       <label className="block">
-        <span className={labelClass}>Nom et prénom</span>
+        <span className={labelClass}>{labels.champ_nom}</span>
         <input
           type="text"
           name="nom"
           autoComplete="name"
-          placeholder="Nom et prénom"
+          placeholder={labels.champ_nom}
           aria-invalid={!!errors.nom}
           aria-describedby={describedBy("nom")}
           className={inputClass}
@@ -82,12 +90,12 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
       </label>
 
       <label className="block">
-        <span className={labelClass}>Email</span>
+        <span className={labelClass}>{labels.champ_email}</span>
         <input
           type="email"
           name="email"
           autoComplete="email"
-          placeholder="Email"
+          placeholder={labels.champ_email}
           aria-invalid={!!errors.email}
           aria-describedby={describedBy("email")}
           className={inputClass}
@@ -96,9 +104,9 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
       </label>
 
       <fieldset className="m-0 p-0 border-0 min-w-0" aria-describedby={describedBy("profil")}>
-        <legend className={`p-0 ${labelClass}`}>Vous êtes</legend>
+        <legend className={`p-0 ${labelClass}`}>{labels.champ_profil}</legend>
         <div className="flex flex-wrap gap-x-8 gap-y-2 mt-1.5">
-          {Object.entries(PROFILS).map(([value, label]) => (
+          {Object.entries(profils).map(([value, label]) => (
             <label
               key={value}
               className="inline-flex items-center gap-2 min-h-11 text-base font-light text-neutral-800 cursor-pointer"
@@ -118,11 +126,11 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
       </fieldset>
 
       <label className="block">
-        <span className={labelClass}>Message</span>
+        <span className={labelClass}>{labels.champ_message}</span>
         <textarea
           name="message"
           rows={4}
-          placeholder="Message…"
+          placeholder={`${labels.champ_message}…`}
           aria-invalid={!!errors.message}
           aria-describedby={describedBy("message")}
           className={`${inputClass} min-h-[120px] resize-none`}
@@ -143,10 +151,10 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
           disabled={status === "sending"}
           className="min-h-12 px-7 border-0 rounded bg-kaki text-neutral-50 font-mono text-xs tracking-[0.9px] uppercase cursor-pointer hover:bg-kaki-dark disabled:opacity-60 disabled:cursor-wait transition-colors"
         >
-          {status === "sending" ? "Envoi en cours…" : "Envoyer le message →"}
+          {status === "sending" ? "Envoi en cours…" : `${labels.bouton} →`}
         </button>
         <p className="mt-3 text-xs leading-[18px] font-light text-neutral-500">
-          Vos données servent uniquement à vous répondre.
+          {labels.mention_donnees}
         </p>
       </div>
 

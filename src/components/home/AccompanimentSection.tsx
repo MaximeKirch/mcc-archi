@@ -1,14 +1,20 @@
 import type { AccompanimentItem } from "#/types/wordpress.ts";
 import { TextLink } from "#/components/page/TextLink.tsx";
 
-export function AccompanimentSection({ items }: { items: AccompanimentItem[] }) {
+export function AccompanimentSection({
+  title,
+  items,
+}: {
+  title: string;
+  items: AccompanimentItem[];
+}) {
   if (!items.length) return null;
 
   return (
     <section className="mt-14 md:mt-24">
       <div className="border-t border-line-kaki pt-6">
         <h2 className="font-mono text-lg leading-[26px] tracking-[1.8px] md:text-2xl md:leading-8 md:tracking-[2.4px] font-medium uppercase text-kaki">
-          Deux niveaux d'accompagnement
+          {title}
         </h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 md:mt-10">
