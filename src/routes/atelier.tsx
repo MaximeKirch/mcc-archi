@@ -6,7 +6,8 @@ import { seoMeta } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
-import type { AtelierAcf } from "#/types/wordpress.ts";
+import { sectionIds } from "#/lib/utils.ts";
+import type { AtelierBloc } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import {
@@ -30,93 +31,92 @@ export const Route = createFileRoute("/atelier")({
 
 const bodyText = "text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700";
 
-function philosophieRows(p: AtelierAcf["philosophie"]) {
-  if (!p) return [];
-  const piliers = asList(p.piliers);
-  const diplomes = asList(p.diplomes);
-  const rows: { label: string; content: React.ReactNode }[] = [];
-
-  if (p.accroche || p.texte_principal || p.texte_secondaire || p.citation || p.origine_nom) {
-    rows.push({
-      label: "Présentation de l’agence et du nom Cuccasa",
-      content: (
+// Null when the block has nothing to show.
+function blocContent(bloc: AtelierBloc): React.ReactNode {
+  switch (bloc.acf_fc_layout) {
+    case "presentation": {
+      const { accroche, texte_principal, texte_secondaire, citation, texte_final } = bloc;
+      if (!(accroche || texte_principal || texte_secondaire || citation || texte_final)) return null;
+      return (
         <>
-          {p.accroche && (
+          {accroche && (
             <h4 className="mb-3.5 md:mb-5 text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki">
-              {p.accroche}
+              {accroche}
             </h4>
           )}
-          {p.texte_principal && (
+          {texte_principal && (
             <Paragraphs
-              text={p.texte_principal}
+              text={texte_principal}
               className="text-lg leading-7 md:text-xl md:leading-8 text-neutral-700 [&+p]:mt-4"
             />
           )}
-          {p.texte_secondaire && (
-            <Paragraphs text={p.texte_secondaire} className={`mt-4 md:mt-5 ${bodyText}`} />
+          {texte_secondaire && (
+            <Paragraphs text={texte_secondaire} className={`mt-4 md:mt-5 ${bodyText}`} />
           )}
-          {p.citation && (
+          {citation && (
             <blockquote className="mt-5 md:mt-6 pl-3.5 md:pl-4 border-l border-neutral-300 text-[15px] leading-[26px] md:text-base md:leading-7 font-medium italic text-neutral-900">
-              « {p.citation} »
+              « {citation} »
             </blockquote>
           )}
-          {p.origine_nom && (
-            <Paragraphs text={p.origine_nom} className={`mt-5 md:mt-6 ${bodyText}`} />
+          {texte_final && <Paragraphs text={texte_final} className={`mt-5 md:mt-6 ${bodyText}`} />}
+        </>
+      );
+    }
+
+    case "texte": {
+      const hasLink = bloc.texte_lien && bloc.cible_lien;
+      if (!bloc.texte && !hasLink) return null;
+      return (
+        <>
+          {bloc.texte && <Paragraphs text={bloc.texte} className={`${bodyText} [&+p]:mt-4`} />}
+          {hasLink && (
+            <TextLink href={bloc.cible_lien} className="mt-2 md:mt-4">
+              {bloc.texte_lien}
+            </TextLink>
           )}
         </>
-      ),
-    });
-  }
+      );
+    }
 
-  if (p.piliers_intro || piliers.length) {
-    rows.push({
-      label: "Pratique architecturale",
-      content: (
+    case "liste": {
+      const elements = asList(bloc.elements);
+      if (!bloc.intro && !elements.length) return null;
+      return (
         <>
-          {p.piliers_intro && <p className={bodyText}>{p.piliers_intro}</p>}
-          {piliers.length > 0 && (
+          {bloc.intro && <p className={bodyText}>{bloc.intro}</p>}
+          {elements.length > 0 && (
             <ul className="mt-3.5 md:mt-4 list-disc pl-[18px] md:pl-5 text-[15px] leading-[26px] md:text-base md:leading-7 text-neutral-700">
-              {piliers.map((pilier) => (
-                <li key={pilier.titre} className="mb-2.5 last:mb-0">
-                  {pilier.titre && (
-                    <strong className="font-semibold text-kaki">{pilier.titre} :</strong>
+              {elements.map((element, i) => (
+                <li key={i} className="mb-2.5 last:mb-0">
+                  {element.titre && (
+                    <strong className="font-semibold text-kaki">{element.titre} :</strong>
                   )}{" "}
-                  {pilier.texte}
+                  {element.texte}
                 </li>
               ))}
             </ul>
           )}
         </>
-      ),
-    });
-  }
+      );
+    }
 
-  if (p.corse) {
-    rows.push({
-      label: "Corse",
-      content: (
+    case "texte_riche":
+      if (!bloc.contenu) return null;
+      return (
         <div
           className={`${bodyText} [&_p+p]:mt-4 [&_a]:underline [&_a]:text-kaki [&_strong]:font-semibold`}
-          dangerouslySetInnerHTML={{ __html: p.corse }}
+          dangerouslySetInnerHTML={{ __html: bloc.contenu }}
         />
-      ),
-    });
-  }
+      );
 
-  const formation = [
-    ...diplomes.map((d) => ({ lieu: d.lieu, intitule: d.intitule })),
-    ...(p.formations_pratiques
-      ? [{ lieu: "Formations pratiques", intitule: p.formations_pratiques }]
-      : []),
-  ];
-  if (formation.length) {
-    rows.push({
-      label: "Diplômes et formation",
-      content: (
+    case "diplomes": {
+      const elements = asList(bloc.elements);
+      if (!elements.length) return null;
+      return (
         <dl>
-          {formation.map((d) => (
+          {elements.map((d, i) => (
             <div
-              key={d.lieu}
+              key={i}
               className="py-3.5 border-b border-line md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-x-6"
             >
               <dt className="font-mono text-[13px] tracking-[0.65px] uppercase text-kaki">
@@ -128,85 +128,49 @@ function philosophieRows(p: AtelierAcf["philosophie"]) {
             </div>
           ))}
         </dl>
-      ),
-    });
-  }
+      );
+    }
 
-  if (p.ouverture_missions) {
-    rows.push({
-      label: "Ouverture sur les missions",
-      content: (
-        <>
-          <p className={bodyText}>{p.ouverture_missions}</p>
-          <TextLink href="/portfolio#projets" className="mt-2 md:mt-4">
-            Voir les missions
-          </TextLink>
-        </>
-      ),
-    });
-  }
+    case "missions": {
+      const missions = asList(bloc.elements).map((m) => m.libelle).filter(Boolean);
+      return missions.length ? <MissionList items={missions} /> : null;
+    }
 
-  return rows;
-}
-
-function particuliersRows(p: AtelierAcf["particuliers"]) {
-  if (!p) return [];
-  const missions = asList(p.missions).map((m) => m.libelle).filter(Boolean);
-  return [
-    p.approche_collaborative && {
-      label: "Une approche collaborative",
-      content: <Paragraphs text={p.approche_collaborative} className={`${bodyText} [&+p]:mt-4`} />,
-    },
-    missions.length > 0 && {
-      label: "Les missions réalisées",
-      content: <MissionList items={missions} />,
-    },
-  ].filter((row) => !!row);
-}
-
-function agencesRows(a: AtelierAcf["agences"]) {
-  if (!a) return [];
-  const missions = asList(a.missions).map((m) => m.libelle).filter(Boolean);
-  return [
-    a.presentation && {
-      label: "Présentation",
-      content: <Paragraphs text={a.presentation} className={`${bodyText} [&+p]:mt-4`} />,
-    },
-    missions.length > 0 && {
-      label: "Les missions réalisées",
-      content: <MissionList items={missions} />,
-    },
-    a.texte_portfolio && {
-      label: "Portfolio",
-      content: (
+    case "encadre":
+      if (!bloc.texte) return null;
+      return (
         // One of the two framed blocks the client asked to keep.
         <div className="border border-line-kaki p-5 md:px-8 md:py-7 md:flex md:items-center md:justify-between md:gap-6">
           <p className="text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-800">
-            {a.texte_portfolio}
+            {bloc.texte}
           </p>
-          {a.email_portfolio && (
-            <TextLink
-              href={`mailto:${a.email_portfolio}`}
-              className="mt-2 md:mt-0 whitespace-nowrap"
-            >
-              Demander le portfolio
+          {bloc.email && (
+            <TextLink href={`mailto:${bloc.email}`} className="mt-2 md:mt-0 whitespace-nowrap">
+              {bloc.texte_bouton || "Demander le portfolio"}
             </TextLink>
           )}
         </div>
-      ),
-    },
-  ].filter((row) => !!row);
+      );
+
+    default:
+      return null;
+  }
 }
 
 function AtelierComponent() {
   const { data: page } = useSuspenseQuery(atelierPageQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const sections = [
-    { id: "philosophie", title: "Philosophie et parcours", rows: philosophieRows(page?.acf.philosophie ?? null) },
-    { id: "particuliers", title: "Accompagnement des particuliers", rows: particuliersRows(page?.acf.particuliers ?? null) },
-    { id: "agences", title: "Collaboration d’agences", rows: agencesRows(page?.acf.agences ?? null) },
-  ].filter((section) => section.rows.length > 0);
+  const visible = asList(page?.acf.sections)
+    .map((section) => ({
+      ...section,
+      rows: asList(section.blocs)
+        .map((bloc) => ({ label: bloc.titre, content: blocContent(bloc) }))
+        .filter((row) => row.content),
+    }))
+    .filter((section) => section.rows.length > 0);
+  const ids = sectionIds(visible);
+  const sections = visible.map((section, i) => ({ ...section, id: ids[i], title: section.titre }));
 
   usePageHeroAnimation(containerRef);
 
@@ -224,8 +188,8 @@ function AtelierComponent() {
           num={String(i + 1).padStart(2, "0")}
           title={section.title}
         >
-          {section.rows.map((row) => (
-            <SectionRow key={row.label} label={row.label}>
+          {section.rows.map((row, j) => (
+            <SectionRow key={j} label={row.label}>
               {row.content}
             </SectionRow>
           ))}

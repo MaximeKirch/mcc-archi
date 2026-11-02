@@ -35,3 +35,23 @@ export function decodeEntities(html: string): string {
     return NAMED_ENTITIES[code.toLowerCase()] ?? match
   })
 }
+
+export function slugify(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+// Anchor typed in WordPress, else the title; duplicates get a suffix.
+export function sectionIds(sections: { titre: string; ancre: string }[]): string[] {
+  const seen = new Map<string, number>()
+  return sections.map((section, i) => {
+    const id = slugify(section.ancre || section.titre) || `section-${i + 1}`
+    const count = seen.get(id) ?? 0
+    seen.set(id, count + 1)
+    return count ? `${id}-${count + 1}` : id
+  })
+}
