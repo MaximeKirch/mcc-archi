@@ -94,35 +94,29 @@ export interface AtelierAcf {
   sections: AcfList<AtelierSection>;
 }
 
-export interface WordPressPost<Acf> {
-  id: number;
-  slug: string;
-  categories: number[];
-  title: { rendered: string };
-  acf: Acf;
-}
-
-export interface MemoireAcf {
-  etiquette: string;
+export interface RechercheFiche {
+  titre: string;
   annee: string;
+  etiquette: string;
+  pdf: { url: string; filename: string } | false | null;
   couverture: AcfImage;
   resume: string;
-  pdf: { url: string; filename: string } | false | null;
 }
 
-export interface SavoirFaireAcf {
+export interface SavoirFaireFiche {
+  titre: string;
+  dates: string;
   etiquette: string;
+  lieu: string;
   photo: AcfImage;
   description: string;
-  dates: string;
-  lieu: string;
 }
 
 export type PortfolioSection = AcfSection &
   (
     | { acf_fc_layout: "projets" }
-    | { acf_fc_layout: "recherches"; texte_lien: string }
-    | { acf_fc_layout: "savoir_faire" }
+    | { acf_fc_layout: "recherches"; texte_lien: string; fiches: AcfList<RechercheFiche> }
+    | { acf_fc_layout: "savoir_faire"; fiches: AcfList<SavoirFaireFiche> }
   );
 
 export interface PortfolioAcf {

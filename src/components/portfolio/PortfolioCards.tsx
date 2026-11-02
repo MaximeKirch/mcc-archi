@@ -1,9 +1,8 @@
 import { normalizeImage, normalizeUrl } from "#/lib/wp.ts";
 import type {
-  MemoireAcf,
-  SavoirFaireAcf,
+  RechercheFiche,
+  SavoirFaireFiche,
   WordPressImage,
-  WordPressPost,
 } from "#/types/wordpress.ts";
 import { ResponsiveImage } from "#/components/page/ResponsiveImage.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
@@ -44,21 +43,21 @@ function Card({ image, imageClass, sizes, meta, title, text, children }: CardPro
 }
 
 export function RechercheCard({
-  post,
+  fiche,
   linkLabel,
 }: {
-  post: WordPressPost<MemoireAcf>;
+  fiche: RechercheFiche;
   linkLabel?: string;
 }) {
-  const pdf = post.acf.pdf ? normalizeUrl(post.acf.pdf.url) : false;
+  const pdf = fiche.pdf ? normalizeUrl(fiche.pdf.url) : false;
   return (
     <Card
-      image={normalizeImage(post.acf.couverture)}
+      image={normalizeImage(fiche.couverture)}
       imageClass="aspect-[3/2]"
       sizes="(min-width: 768px) 624px, 100vw"
-      meta={[post.acf.etiquette, post.acf.annee]}
-      title={post.title.rendered}
-      text={post.acf.resume}
+      meta={[fiche.etiquette, fiche.annee]}
+      title={fiche.titre}
+      text={fiche.resume}
     >
       {pdf && (
         <TextLink href={pdf} newTab className="md:mt-3">
@@ -69,19 +68,19 @@ export function RechercheCard({
   );
 }
 
-export function SavoirFaireCard({ post }: { post: WordPressPost<SavoirFaireAcf> }) {
+export function SavoirFaireCard({ fiche }: { fiche: SavoirFaireFiche }) {
   return (
     <Card
-      image={normalizeImage(post.acf.photo)}
+      image={normalizeImage(fiche.photo)}
       imageClass="aspect-[4/3]"
       sizes="(min-width: 1024px) 405px, (min-width: 768px) 50vw, 100vw"
-      meta={[post.acf.etiquette, post.acf.dates]}
-      title={post.title.rendered}
-      text={post.acf.description}
+      meta={[fiche.etiquette, fiche.dates]}
+      title={fiche.titre}
+      text={fiche.description}
     >
-      {post.acf.lieu && (
+      {fiche.lieu && (
         <p className="mt-2 font-mono text-[11px] tracking-[0.9px] uppercase text-neutral-500">
-          {post.acf.lieu}
+          {fiche.lieu}
         </p>
       )}
     </Card>
