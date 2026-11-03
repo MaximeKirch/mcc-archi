@@ -1,4 +1,5 @@
 import type { ContactAcf } from "#/types/wordpress.ts";
+import { RichText } from "#/components/page/Section.tsx";
 
 const DEFAULT_TITLE = ["Échangeons sur", "votre projet."];
 
@@ -18,9 +19,10 @@ export function ContactHero({ contact }: { contact: ContactAcf | null }) {
       </h1>
       {/* w-0 min-w-full: as wide as the title, never wider. */}
       {contact?.intro && (
-        <p className="js-contact-details w-0 min-w-full mt-6 md:mt-8 text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-500 text-justify [text-align-last:justify]">
-          {contact.intro}
-        </p>
+        <RichText
+          html={contact.intro}
+          className="js-contact-details w-0 min-w-full mt-6 md:mt-8 text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-500 text-justify [text-align-last:justify]"
+        />
       )}
     </div>
   );

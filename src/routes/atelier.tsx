@@ -12,7 +12,7 @@ import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import {
   MissionList,
-  Paragraphs,
+  RichText,
   Section,
   SectionRow,
 } from "#/components/page/Section.tsx";
@@ -48,20 +48,20 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
             </h4>
           )}
           {texte_principal && (
-            <Paragraphs
-              text={texte_principal}
-              className="text-lg leading-7 md:text-xl md:leading-8 text-neutral-700 [&+p]:mt-4"
+            <RichText
+              html={texte_principal}
+              className="text-lg leading-7 md:text-xl md:leading-8 text-neutral-700"
             />
           )}
           {texte_secondaire && (
-            <Paragraphs text={texte_secondaire} className={`mt-4 md:mt-5 ${bodyText}`} />
+            <RichText html={texte_secondaire} className={`mt-4 md:mt-5 ${bodyText}`} />
           )}
           {citation && (
             <blockquote className="mt-5 md:mt-6 pl-3.5 md:pl-4 border-l border-neutral-300 text-[15px] leading-[26px] md:text-base md:leading-7 font-medium italic text-neutral-900">
               « {citation} »
             </blockquote>
           )}
-          {texte_final && <Paragraphs text={texte_final} className={`mt-5 md:mt-6 ${bodyText}`} />}
+          {texte_final && <RichText html={texte_final} className={`mt-5 md:mt-6 ${bodyText}`} />}
         </>
       );
     }
@@ -71,7 +71,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       if (!bloc.texte && !hasLink) return null;
       return (
         <>
-          {bloc.texte && <Paragraphs text={bloc.texte} className={`${bodyText} [&+p]:mt-4`} />}
+          {bloc.texte && <RichText html={bloc.texte} className={bodyText} />}
           {hasLink && (
             <TextLink href={bloc.cible_lien} className="mt-2 md:mt-4">
               {bloc.texte_lien}
@@ -86,7 +86,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       if (!bloc.intro && !elements.length) return null;
       return (
         <>
-          {bloc.intro && <p className={bodyText}>{bloc.intro}</p>}
+          {bloc.intro && <RichText html={bloc.intro} className={bodyText} />}
           {elements.length > 0 && (
             <ul className="mt-3.5 md:mt-4 list-disc pl-[18px] md:pl-5 text-[15px] leading-[26px] md:text-base md:leading-7 text-neutral-700">
               {elements.map((element, i) => (
@@ -105,12 +105,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
 
     case "texte_riche":
       if (!bloc.contenu) return null;
-      return (
-        <div
-          className={`${bodyText} [&_p+p]:mt-4 [&_a]:underline [&_a]:text-kaki [&_strong]:font-semibold`}
-          dangerouslySetInnerHTML={{ __html: bloc.contenu }}
-        />
-      );
+      return <RichText html={bloc.contenu} className={bodyText} />;
 
     case "diplomes": {
       const elements = asList(bloc.elements);

@@ -49,14 +49,20 @@ export function MissionList({ items }: { items: string[] }) {
   );
 }
 
-// Plain textarea content: a blank line starts a new paragraph.
-export function Paragraphs({ text, className }: { text: string; className?: string }) {
-  return text
-    .split(/\n\s*\n/)
-    .filter((p) => p.trim())
-    .map((p, i) => (
-      <p key={i} className={className}>
-        {p.trim()}
-      </p>
-    ));
+// ACF WYSIWYG html, already cleaned by WordPress. Plain text (old textarea): a blank line starts a paragraph.
+export function RichText({ html, className = "" }: { html: string; className?: string }) {
+  const classes = `texte-riche ${className}`;
+  if (/<[a-z][^>]*>/i.test(html)) {
+    return <div className={classes} dangerouslySetInnerHTML={{ __html: html }} />;
+  }
+  return (
+    <div className={classes}>
+      {html
+        .split(/\n\s*\n/)
+        .filter((p) => p.trim())
+        .map((p, i) => (
+          <p key={i}>{p.trim()}</p>
+        ))}
+    </div>
+  );
 }

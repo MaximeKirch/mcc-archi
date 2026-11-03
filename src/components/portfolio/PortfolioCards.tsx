@@ -4,6 +4,7 @@ import type {
   SavoirFaireFiche,
   WordPressImage,
 } from "#/types/wordpress.ts";
+import { RichText } from "#/components/page/Section.tsx";
 import { ResponsiveImage } from "#/components/page/ResponsiveImage.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
 
@@ -35,7 +36,7 @@ function Card({ image, imageClass, sizes, meta, title, text, children }: CardPro
         {title}
       </h3>
       {text && (
-        <p className="mt-2 text-sm leading-[21px] font-light text-neutral-500">{text}</p>
+        <RichText html={text} className="mt-2 text-sm leading-[21px] font-light text-neutral-500" />
       )}
       {children}
     </article>
