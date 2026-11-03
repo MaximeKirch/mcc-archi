@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
-import { seoMeta } from "#/lib/seo.ts";
+import { seoHead } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
@@ -23,9 +23,12 @@ export const Route = createFileRoute("/atelier")({
     const page = await context.queryClient.ensureQueryData(atelierPageQueryOptions);
     return { seo: page?.acf };
   },
-  head: ({ loaderData }) => ({
-    meta: seoMeta(loaderData?.seo, { title: `L'atelier | ${siteConfig.name}` }),
-  }),
+  head: ({ loaderData }) =>
+    seoHead(loaderData?.seo, {
+      title: `L'atelier | ${siteConfig.name}`,
+      path: "/atelier",
+      image: normalizeImage(loaderData?.seo?.photo_hero)?.url,
+    }),
   component: AtelierComponent,
 });
 

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
-import { seoMeta } from "#/lib/seo.ts";
+import { seoHead } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { portfolioPageQueryOptions } from "#/queries/portfolio.ts";
 import { projectsQueryOptions } from "#/queries/projects.ts";
@@ -27,13 +27,14 @@ export const Route = createFileRoute("/portfolio")({
     ]);
     return { seo: page?.acf };
   },
-  head: ({ loaderData }) => ({
-    meta: seoMeta(loaderData?.seo, {
+  head: ({ loaderData }) =>
+    seoHead(loaderData?.seo, {
       title: `Portfolio | ${siteConfig.name}`,
       description:
         "Projets d'architecture, recherches, mémoires et savoir-faire de l'atelier Cuccà[sa], en Corse et à Marseille.",
+      path: "/portfolio",
+      image: normalizeImage(loaderData?.seo?.photo_hero)?.url,
     }),
-  }),
   component: PortfolioComponent,
 });
 
