@@ -1,4 +1,5 @@
 import type { AccompanimentItem } from "#/types/wordpress.ts";
+import { RichText } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
 
 export function AccompanimentSection({
@@ -29,9 +30,10 @@ export function AccompanimentSection({
               </span>
             </div>
             {item.texte && (
-              <p className="mt-3 md:mt-4 max-w-[520px] text-base leading-[25px] md:text-lg md:leading-7 font-light text-neutral-700">
-                {item.texte}
-              </p>
+              <RichText
+                html={item.texte}
+                className="mt-3 md:mt-4 max-w-[520px] text-base leading-[25px] md:text-lg md:leading-7 font-light text-neutral-700"
+              />
             )}
             {item.texte_lien && item.cible_lien && (
               <TextLink href={item.cible_lien} className="md:mt-4">
