@@ -11,6 +11,8 @@ import type { QueryClient } from '@tanstack/react-query'
 import { siteConfig } from '../config/site'
 import { contactPageQueryOptions } from '../queries/contact'
 import { jsonLdScript, organizationJsonLd } from '../lib/seo'
+import { trackLinkClicks, umamiScripts } from '../lib/analytics'
+import { useEffect } from 'react'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -28,7 +30,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       { property: 'og:site_name', content: siteConfig.name },
       { property: 'og:locale', content: 'fr_FR' },
     ],
-    scripts: [jsonLdScript(organizationJsonLd(loaderData?.acf))],
+    scripts: [jsonLdScript(organizationJsonLd(loaderData?.acf)), ...umamiScripts()],
     links: [
       { rel: 'stylesheet', href: appCss },
     ],
@@ -37,6 +39,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  useEffect(trackLinkClicks, [])
+
   return (
     <html lang="fr">
       <head>
