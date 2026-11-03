@@ -57,7 +57,7 @@ function ContactComponent() {
 
   return (
     <PageShell ref={containerRef} navLabel="Contact">
-      <div className="mt-14 md:mt-30 lg:grid lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="mt-14 md:mt-12 lg:grid lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="lg:pr-16">
           <ContactHero contact={contact} />
           <ContactForm fallbackEmail={contact?.email ?? ""} labels={labels} />

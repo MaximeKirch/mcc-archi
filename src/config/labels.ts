@@ -6,7 +6,7 @@ export const HOME_LABELS = {
   localisation: "Atelier d'architecture - EVISA | CORSE",
   lien_atelier: "L'atelier",
   lien_portfolio: "Portfolio",
-  lien_contact: "Nous contacter",
+  lien_contact: "Contact",
 };
 
 export const CONTACT_LABELS = {

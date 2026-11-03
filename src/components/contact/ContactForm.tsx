@@ -64,7 +64,7 @@ export function ContactForm({
 
   if (status === "sent") {
     return (
-      <p role="status" className="mt-8 md:mt-12 max-w-[640px] text-lg leading-7 font-light text-neutral-800">
+      <p role="status" className="mt-8 max-w-[640px] text-lg leading-7 font-light text-neutral-800">
         {labels.confirmation}
       </p>
     );
@@ -77,7 +77,7 @@ export function ContactForm({
     <form
       noValidate
       onSubmit={handleSubmit}
-      className="js-contact-details flex flex-col gap-5 md:gap-6 mt-8 md:mt-12 max-w-[640px]"
+      className="js-contact-details flex flex-col gap-5 md:gap-6 mt-8 max-w-[640px]"
     >
       <label className="block">
         <span className={labelClass}>{labels.champ_nom}</span>
@@ -149,7 +149,7 @@ export function ContactForm({
         </label>
       </div>
 
-      <div>
+      <div className="lg:flex lg:items-center lg:justify-between lg:gap-6">
         <button
           type="submit"
           disabled={status === "sending"}
@@ -157,7 +157,7 @@ export function ContactForm({
         >
           {status === "sending" ? "Envoi en cours…" : `${labels.bouton} →`}
         </button>
-        <p className="mt-3 text-xs leading-[18px] font-light text-neutral-500">
+        <p className="mt-3 lg:mt-0 lg:text-right text-xs leading-[18px] font-light text-neutral-500">
           {labels.mention_donnees}
         </p>
       </div>
