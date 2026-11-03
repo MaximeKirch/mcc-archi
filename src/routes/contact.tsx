@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
 import { CONTACT_LABELS, withDefaults } from "#/config/labels.ts";
 import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
-import { seoMeta } from "#/lib/seo.ts";
+import { seoHead } from "#/lib/seo.ts";
 import { contactPageQueryOptions } from "#/queries/contact.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { ContactHero } from "#/components/contact/ContactHero.tsx";
@@ -16,13 +16,13 @@ export const Route = createFileRoute("/contact")({
     const page = await context.queryClient.ensureQueryData(contactPageQueryOptions);
     return { seo: page?.acf };
   },
-  head: ({ loaderData }) => ({
-    meta: seoMeta(loaderData?.seo, {
+  head: ({ loaderData }) =>
+    seoHead(loaderData?.seo, {
       title: `Contact | ${siteConfig.name}`,
       description:
         "Contactez l'atelier Cuccà[sa] à Évisa, en Corse : projets de particuliers et collaborations avec les agences d'architecture.",
+      path: "/contact",
     }),
-  }),
   component: ContactComponent,
 });
 

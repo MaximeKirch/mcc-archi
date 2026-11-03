@@ -26,7 +26,7 @@ function normalizeProjectUrls(project: WordPressProject): WordPressProject {
   };
 }
 
-async function fetchProjects(): Promise<WordPressProject[]> {
+export async function fetchProjects(): Promise<WordPressProject[]> {
   const response = await fetch(
     `${siteConfig.apiUrl}/posts?per_page=100&orderby=menu_order&order=asc&${siteConfig.acfFormatParam}`,
   );
