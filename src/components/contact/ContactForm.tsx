@@ -2,6 +2,7 @@ import { useState } from "react";
 import { contactSchema } from "#/lib/contact.ts";
 import type { ContactInput, ContactStatus } from "#/lib/contact.ts";
 import { sendContactMessage } from "#/server/contact.ts";
+import { track } from "#/lib/analytics.ts";
 import type { ContactLabels } from "#/config/labels.ts";
 
 type Field = "nom" | "email" | "profil" | "message";
@@ -52,7 +53,10 @@ export function ContactForm({
     try {
       const result = await sendContactMessage({ data: parsed.data });
       setStatus(result.status);
-      if (result.status === "sent") form.reset();
+      if (result.status === "sent") {
+        form.reset();
+        track("contact-envoye", { profil: parsed.data.profil });
+      }
     } catch {
       setStatus("error");
     }

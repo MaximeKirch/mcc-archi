@@ -3,6 +3,7 @@ import type { ContactLabels, HomeLabels, ProjectLabels } from "#/config/labels.t
 export default interface WordPressProject {
   id: number;
   slug: string;
+  modified: string;
   categories: number[];
   title: {
     rendered: string;

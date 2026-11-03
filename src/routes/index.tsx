@@ -7,7 +7,7 @@ import { projectsQueryOptions } from "#/queries/projects.ts";
 import { homePageQueryOptions } from "#/queries/home.ts";
 import { asList } from "#/queries/pages.ts";
 import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
-import { seoMeta } from "#/lib/seo.ts";
+import { seoHead } from "#/lib/seo.ts";
 import { HeroHeader } from "#/components/page/HeroHeader.tsx";
 import { SiteFooter } from "#/components/page/SiteFooter.tsx";
 import { ProjectGrid } from "#/components/project/ProjectGrid.tsx";
@@ -22,11 +22,11 @@ export const Route = createFileRoute("/")({
     ]);
     return { seo: page?.acf };
   },
-  head: ({ loaderData }) => ({
-    meta: seoMeta(loaderData?.seo, {
+  head: ({ loaderData }) =>
+    seoHead(loaderData?.seo, {
       title: `${siteConfig.name} | Atelier d'architecture en Corse`,
+      path: "/",
     }),
-  }),
 });
 
 function HomeComponent() {
