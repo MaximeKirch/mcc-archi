@@ -9,7 +9,7 @@ export function ContactHero({ contact }: { contact: ContactAcf | null }) {
 
   return (
     <div className="w-fit max-w-full">
-      <h1 className="text-[40px] leading-[44px] tracking-[-2px] md:text-7xl md:leading-[76px] md:tracking-[-3.6px] uppercase text-neutral-900 [font-kerning:none]">
+      <h1 className="text-[40px] leading-[44px] tracking-[-2px] md:text-7xl md:leading-[76px] md:tracking-[-3.6px] uppercase text-kaki [font-kerning:none]">
         <span className="js-contact-title block overflow-hidden">
           <span className="block font-extralight">{light}</span>
         </span>

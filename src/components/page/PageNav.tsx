@@ -1,15 +1,24 @@
 import { Link } from "@tanstack/react-router";
+import { HOME_LABELS } from "#/config/labels.ts";
 
 interface PageNavProps {
   backLabel: string;
   rightLabel: string;
   sticky?: boolean;
+  showLinks?: boolean;
 }
+
+const NAV_LINKS = [
+  { to: "/atelier", label: HOME_LABELS.lien_atelier },
+  { to: "/portfolio", label: HOME_LABELS.lien_portfolio },
+  { to: "/contact", label: HOME_LABELS.lien_contact },
+] as const;
 
 export function PageNav({
   backLabel,
   rightLabel,
   sticky = false,
+  showLinks = false,
 }: PageNavProps) {
   return (
     <div
@@ -25,7 +34,25 @@ export function PageNav({
           >
             ← {backLabel}
           </Link>
-          <span className="text-neutral-500">{rightLabel}</span>
+          <span className={`text-neutral-500 ${showLinks ? "lg:hidden" : ""}`}>
+            {rightLabel}
+          </span>
+          {showLinks && (
+            <ul className="hidden lg:flex items-center gap-8 uppercase">
+              {NAV_LINKS.map(({ to, label }) => (
+                <li key={to}>
+                  <Link
+                    to={to}
+                    className="hover:text-kaki transition-colors"
+                    activeProps={{ className: "font-bold text-kaki" }}
+                    inactiveProps={{ className: "text-neutral-500" }}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </nav>
     </div>
