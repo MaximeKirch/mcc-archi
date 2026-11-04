@@ -14,7 +14,7 @@ export function PageShell({ navLabel, children, ref }: PageShellProps) {
       ref={ref}
       className="min-h-screen bg-neutral-50 text-neutral-900 font-sans antialiased flex flex-col"
     >
-      <PageNav backLabel="Accueil" rightLabel={navLabel} />
+      <PageNav backLabel="Accueil" rightLabel={navLabel} showLinks />
       <div className="flex-1 flex flex-col max-w-[84rem] w-full mx-auto px-4 md:px-8">
         <main className="flex-1">{children}</main>
         <SiteFooter />
