@@ -22,9 +22,11 @@ export function Section({ id, num, title, children }: SectionProps) {
 interface SectionRowProps {
   label: string;
   children: React.ReactNode;
+  // Full width, under the label and content.
+  after?: React.ReactNode;
 }
 
-export function SectionRow({ label, children }: SectionRowProps) {
+export function SectionRow({ label, children, after }: SectionRowProps) {
   return (
     <div className="py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12">
       {label && (
@@ -32,7 +34,8 @@ export function SectionRow({ label, children }: SectionRowProps) {
           {label}
         </h3>
       )}
-      <div className="md:col-start-2 max-w-[760px]">{children}</div>
+      {children && <div className="md:col-start-2 max-w-[760px]">{children}</div>}
+      {after && <div className="mt-8 md:mt-10 md:col-span-full">{after}</div>}
     </div>
   );
 }

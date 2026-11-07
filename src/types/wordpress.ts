@@ -65,6 +65,12 @@ export interface WordPressImage {
 type AcfList<T> = T[] | false | "";
 type AcfImage = WordPressImage | false | null;
 
+export interface CarouselSlide {
+  image: AcfImage;
+  titre: string;
+  texte: string;
+}
+
 // Flexible content row: `acf_fc_layout` names the layout.
 interface AcfSection {
   titre: string;
@@ -79,6 +85,8 @@ export type AtelierBloc = { titre: string } & (
       texte_secondaire: string;
       citation: string;
       texte_final: string;
+      // Missing until the backend field ships.
+      carrousel?: AcfList<CarouselSlide>;
     }
   | { acf_fc_layout: "texte"; texte: string; texte_lien: string; cible_lien: string }
   | { acf_fc_layout: "liste"; intro: string; elements: AcfList<{ titre: string; texte: string }> }

@@ -17,6 +17,7 @@ import {
   SectionRow,
 } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
+import { Carousel } from "#/components/page/Carousel.tsx";
 
 export const Route = createFileRoute("/atelier")({
   loader: async ({ context }) => {
@@ -155,6 +156,16 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
   }
 }
 
+// Full-width part under the block, null when empty.
+function blocAfter(bloc: AtelierBloc): React.ReactNode {
+  if (bloc.acf_fc_layout !== "presentation") return null;
+  const slides = asList(bloc.carrousel)
+    .map((s) => ({ ...s, image: normalizeImage(s.image) }))
+    .filter((s) => s.image || s.titre || s.texte);
+  if (!slides.length) return null;
+  return <Carousel slides={slides} label={bloc.titre || "Carrousel"} />;
+}
+
 function AtelierComponent() {
   const { data: page } = useSuspenseQuery(atelierPageQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -163,8 +174,12 @@ function AtelierComponent() {
     .map((section) => ({
       ...section,
       rows: asList(section.blocs)
-        .map((bloc) => ({ label: bloc.titre, content: blocContent(bloc) }))
-        .filter((row) => row.content),
+        .map((bloc) => ({
+          label: bloc.titre,
+          content: blocContent(bloc),
+          after: blocAfter(bloc),
+        }))
+        .filter((row) => row.content || row.after),
     }))
     .filter((section) => section.rows.length > 0);
   const ids = sectionIds(visible);
@@ -187,7 +202,7 @@ function AtelierComponent() {
           title={section.title}
         >
           {section.rows.map((row, j) => (
-            <SectionRow key={j} label={row.label}>
+            <SectionRow key={j} label={row.label} after={row.after}>
               {row.content}
             </SectionRow>
           ))}
