@@ -1,3 +1,5 @@
+import { cn } from "#/lib/utils.ts";
+
 interface SectionProps {
   id: string;
   num: string;
@@ -28,7 +30,13 @@ interface SectionRowProps {
 
 export function SectionRow({ label, children, after }: SectionRowProps) {
   return (
-    <div className="py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12">
+    <div
+      className={cn(
+        "py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12",
+        // Ends the section: 40px to the next separator, like its top (96 - 56).
+        after && "md:last:-mb-14",
+      )}
+    >
       {label && (
         <h3 className="mb-3.5 md:mb-0 md:mt-1.5 font-mono text-[11px] leading-4 tracking-[1.4px] uppercase text-neutral-500">
           {label}

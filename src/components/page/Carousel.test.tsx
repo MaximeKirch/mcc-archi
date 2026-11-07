@@ -9,8 +9,10 @@ const slides: Slide[] = ["Un", "Deux", "Trois"].map((titre) => ({
   texte: `<p>${titre}</p>`,
 }));
 
-const activeTitle = (container: HTMLElement) =>
-  container.querySelector("[data-active] h4")?.textContent;
+const active = (container: HTMLElement) => container.querySelector<HTMLElement>("[data-active]")!;
+const activeTitle = (container: HTMLElement) => active(container).querySelector("h4")?.textContent;
+const control = (container: HTMLElement, name: "prev" | "next") =>
+  active(container).querySelector<HTMLButtonElement>(`[data-control="${name}"]`)!;
 
 afterEach(cleanup);
 
@@ -25,16 +27,15 @@ describe("Carousel", () => {
     expect(screen.queryAllByRole("button")).toHaveLength(0);
   });
 
-  it("loops both ways and updates the counter", () => {
+  it("loops both ways and announces the position", () => {
     const { container } = render(<Carousel slides={slides} label="Test" />);
-    const prev = screen.getByLabelText("Diapositive précédente");
-    const next = screen.getByLabelText("Diapositive suivante");
 
-    fireEvent.click(prev);
+    fireEvent.click(control(container, "prev"));
     expect(activeTitle(container)).toBe("Trois");
-    expect(container.textContent).toContain("03 / 03");
+    expect(active(container).textContent).toContain("03 / 03");
+    expect(container.querySelector("[aria-live]")?.textContent).toBe("Diapositive 3 sur 3");
 
-    fireEvent.click(next);
+    fireEvent.click(control(container, "next"));
     expect(activeTitle(container)).toBe("Un");
   });
 
@@ -47,5 +48,13 @@ describe("Carousel", () => {
 
     const inert = container.querySelectorAll("[aria-roledescription='diapositive'][inert]");
     expect(inert).toHaveLength(2);
+  });
+
+  it("keeps focus on the same button in the new slide", () => {
+    const { container } = render(<Carousel slides={slides} label="Test" />);
+    control(container, "next").focus();
+
+    fireEvent.click(control(container, "next"));
+    expect(document.activeElement).toBe(control(container, "next"));
   });
 });

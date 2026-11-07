@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { WordPressImage } from "#/types/wordpress.ts";
 import { cn } from "#/lib/utils.ts";
@@ -25,14 +25,26 @@ export function Carousel({ slides, label }: CarouselProps) {
   const [index, setIndex] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
+  const pendingFocus = useRef<string | null>(null);
   const count = slides.length;
+
+  // Each slide has its own buttons: carry focus over to the new slide's.
+  useEffect(() => {
+    if (!pendingFocus.current) return;
+    rootRef.current
+      ?.querySelector<HTMLElement>(`[data-active] [data-control="${pendingFocus.current}"]`)
+      ?.focus();
+    pendingFocus.current = null;
+  }, [index]);
 
   if (!count) return null;
 
   const go = (step: number) => {
-    // Focus inside the slide going inert would fall back to <body>.
-    const active = rootRef.current?.querySelector("[data-active]");
-    if (active?.contains(document.activeElement)) rootRef.current?.focus();
+    const focused = document.activeElement;
+    if (rootRef.current?.querySelector("[data-active]")?.contains(focused)) {
+      pendingFocus.current = focused?.getAttribute("data-control") ?? null;
+      if (!pendingFocus.current) rootRef.current.focus();
+    }
     setIndex((i) => (i + step + count) % count);
   };
 
@@ -84,32 +96,60 @@ export function Carousel({ slides, label }: CarouselProps) {
               inert={!active}
               data-active={active || undefined}
               className={cn(
-                "[grid-area:1/1] transition-[opacity,visibility] duration-[180ms] motion-reduce:transition-none",
+                "[grid-area:1/1] flex flex-col md:grid md:grid-cols-[240px_minmax(0,1fr)] md:grid-rows-[1fr_auto] md:gap-x-12",
+                "transition-[opacity,visibility] duration-[180ms] motion-reduce:transition-none",
                 active ? "opacity-100" : "invisible opacity-0",
               )}
             >
-              <div className="md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start">
-                {slide.image && (
-                  <ResponsiveImage
-                    image={slide.image}
-                    sizes="(min-width: 768px) 240px, 55vw"
-                    loading={i === 0 ? "eager" : "lazy"}
-                    className="block w-[55%] md:w-full aspect-[4/5] object-cover rounded-lg"
+              {slide.image && (
+                <ResponsiveImage
+                  image={slide.image}
+                  sizes="(min-width: 768px) 240px, 100vw"
+                  loading={i === 0 ? "eager" : "lazy"}
+                  className="block w-full aspect-[4/5] object-cover rounded-lg md:row-start-1 md:col-start-1"
+                />
+              )}
+              {/* Mobile: right under the image. Desktop: bottom of the slide. */}
+              {count > 1 && (
+                <div className="flex items-center gap-2 md:gap-4 mt-2 md:mt-5 md:row-start-2 md:col-span-full">
+                  <button
+                    type="button"
+                    data-control="prev"
+                    aria-label="Diapositive précédente"
+                    className={button}
+                    onClick={() => go(-1)}
+                  >
+                    <ChevronLeft size={24} strokeWidth={1.6} aria-hidden="true" />
+                  </button>
+                  <span
+                    aria-hidden="true"
+                    className="font-mono text-[11px] tracking-[1.4px] text-neutral-500 tabular-nums"
+                  >
+                    {pad(i + 1)} / {pad(count)}
+                  </span>
+                  <button
+                    type="button"
+                    data-control="next"
+                    aria-label="Diapositive suivante"
+                    className={button}
+                    onClick={() => go(1)}
+                  >
+                    <ChevronRight size={24} strokeWidth={1.6} aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+              <div className="mt-4 md:mt-0 md:row-start-1 md:col-start-2 max-w-[760px]">
+                {slide.titre && (
+                  <h4 className="mb-3.5 md:mb-4 text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki">
+                    {slide.titre}
+                  </h4>
+                )}
+                {slide.texte && (
+                  <RichText
+                    html={slide.texte}
+                    className="text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700"
                   />
                 )}
-                <div className="mt-5 md:mt-0 md:col-start-2 max-w-[760px]">
-                  {slide.titre && (
-                    <h4 className="mb-3.5 md:mb-4 text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki">
-                      {slide.titre}
-                    </h4>
-                  )}
-                  {slide.texte && (
-                    <RichText
-                      html={slide.texte}
-                      className="text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700"
-                    />
-                  )}
-                </div>
               </div>
             </div>
           );
@@ -117,32 +157,9 @@ export function Carousel({ slides, label }: CarouselProps) {
       </div>
 
       {count > 1 && (
-        <div className="flex items-center gap-2 md:gap-4 mt-3 md:mt-5">
-          <button
-            type="button"
-            aria-label="Diapositive précédente"
-            className={button}
-            onClick={() => go(-1)}
-          >
-            <ChevronLeft size={24} strokeWidth={1.6} aria-hidden="true" />
-          </button>
-          <span aria-live="polite" className="font-mono text-[11px] tracking-[1.4px] text-neutral-500 tabular-nums">
-            <span aria-hidden="true">
-              {pad(index + 1)} / {pad(count)}
-            </span>
-            <span className="sr-only">
-              Diapositive {index + 1} sur {count}
-            </span>
-          </span>
-          <button
-            type="button"
-            aria-label="Diapositive suivante"
-            className={button}
-            onClick={() => go(1)}
-          >
-            <ChevronRight size={24} strokeWidth={1.6} aria-hidden="true" />
-          </button>
-        </div>
+        <p aria-live="polite" className="sr-only">
+          Diapositive {index + 1} sur {count}
+        </p>
       )}
     </div>
   );
