@@ -41,7 +41,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               {project.acf.title || project.title.rendered}
             </h2>
             <div
-              className="text-neutral-500 text-sm font-light mt-3 line-clamp-2 leading-relaxed"
+              className="texte-justifie text-neutral-500 text-sm font-light mt-3 line-clamp-2 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: project.acf.description }}
             />
           </div>

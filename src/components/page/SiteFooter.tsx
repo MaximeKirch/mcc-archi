@@ -1,9 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { Mail } from "lucide-react";
 import { siteConfig } from "#/config/site.ts";
 import { cn } from "#/lib/utils.ts";
 import { contactPageQueryOptions } from "#/queries/contact.ts";
 import { asList } from "#/queries/pages.ts";
-import { SOCIAL_LABELS } from "#/components/contact/SocialIcon.tsx";
+import { SOCIAL_LABELS, SocialIcon } from "#/components/contact/SocialIcon.tsx";
+
+const iconLink =
+  "inline-flex items-center justify-center size-11 md:size-6 text-kaki hover:text-kaki-dark transition-colors";
 
 // Not suspense: the footer also renders on error pages, when the API may be down.
 export function SiteFooter({ className }: { className?: string }) {
@@ -20,21 +25,23 @@ export function SiteFooter({ className }: { className?: string }) {
       <span>
         © {new Date().getFullYear()} — {siteConfig.name}.
       </span>
-      {reseaux.length > 0 && (
-        <span className="flex gap-6">
-          {reseaux.map(({ reseau, url }) => (
-            <a
-              key={url}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center min-h-11 md:min-h-0 underline hover:text-neutral-900 transition-colors"
-            >
-              {SOCIAL_LABELS[reseau]}
-            </a>
-          ))}
-        </span>
-      )}
+      <span className="flex items-center gap-2 md:gap-4">
+        {reseaux.map(({ reseau, url }) => (
+          <a
+            key={url}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={SOCIAL_LABELS[reseau]}
+            className={iconLink}
+          >
+            <SocialIcon network={reseau} />
+          </a>
+        ))}
+        <Link to="/contact" aria-label="Contact" className={iconLink}>
+          <Mail size={24} strokeWidth={1.6} aria-hidden="true" />
+        </Link>
+      </span>
     </footer>
   );
 }

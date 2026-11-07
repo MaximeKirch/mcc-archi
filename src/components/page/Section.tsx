@@ -1,3 +1,5 @@
+import { cn } from "#/lib/utils.ts";
+
 interface SectionProps {
   id: string;
   num: string;
@@ -7,7 +9,7 @@ interface SectionProps {
 
 export function Section({ id, num, title, children }: SectionProps) {
   return (
-    <section id={id} className="mt-14 md:mt-24 scroll-mt-6">
+    <section id={id} className="mt-14 md:mt-24 -scroll-mt-px">
       <div className="border-t border-line-kaki pt-4 md:pt-6 flex items-baseline gap-3 md:gap-5">
         <span className="font-mono text-[13px] md:text-sm text-neutral-500">{num}</span>
         <h2 className="font-mono text-lg leading-[26px] tracking-[1.8px] md:text-2xl md:leading-8 md:tracking-[2.4px] font-medium uppercase text-kaki">
@@ -22,17 +24,26 @@ export function Section({ id, num, title, children }: SectionProps) {
 interface SectionRowProps {
   label: string;
   children: React.ReactNode;
+  // Full width, under the label and content.
+  after?: React.ReactNode;
 }
 
-export function SectionRow({ label, children }: SectionRowProps) {
+export function SectionRow({ label, children, after }: SectionRowProps) {
   return (
-    <div className="py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12">
+    <div
+      className={cn(
+        "py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12",
+        // Ends the section: 40px to the next separator, like its top (96 - 56).
+        after && "md:last:-mb-14",
+      )}
+    >
       {label && (
         <h3 className="mb-3.5 md:mb-0 md:mt-1.5 font-mono text-[11px] leading-4 tracking-[1.4px] uppercase text-neutral-500">
           {label}
         </h3>
       )}
-      <div className="md:col-start-2 max-w-[760px]">{children}</div>
+      {children && <div className="md:col-start-2 max-w-[760px]">{children}</div>}
+      {after && <div className="mt-8 md:mt-10 md:col-span-full">{after}</div>}
     </div>
   );
 }

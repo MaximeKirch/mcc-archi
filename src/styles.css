@@ -39,6 +39,12 @@ body {
 
 /* ACF WYSIWYG content (Cuccasa toolbar). Sizes are relative to each field's base size. */
 @layer components {
+  /* Inline alignment set by the client in WordPress still wins. */
+  .texte-riche,
+  .texte-justifie {
+    text-align: justify;
+    hyphens: auto;
+  }
   .texte-riche > * + * {
     margin-top: 1rem;
   }
