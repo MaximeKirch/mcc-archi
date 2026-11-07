@@ -84,6 +84,54 @@ body {
   }
 }
 
+/* Missions accordion (atelier). */
+@layer components {
+  .mission {
+    color: #404040;
+  }
+  .mission[aria-expanded="true"] {
+    color: var(--color-kaki);
+  }
+  .mission:focus-visible {
+    outline: 2px solid var(--color-kaki);
+    outline-offset: 2px;
+  }
+  .mission-ch {
+    display: inline-block;
+    vertical-align: -2px;
+    margin-left: 8px;
+    color: var(--color-kaki);
+    transition: transform 150ms;
+  }
+  .mission[aria-expanded="true"] .mission-ch {
+    transform: rotate(90deg);
+  }
+  /* Underline drawn left to right, text only. */
+  .mission-u {
+    background: linear-gradient(var(--color-kaki), var(--color-kaki)) no-repeat 0 100% / 0 1px;
+    padding-bottom: 2px;
+    transition: background-size 250ms ease;
+  }
+  .mission:focus-visible .mission-u,
+  .mission[aria-expanded="true"] .mission-u {
+    background-size: 100% 1px;
+  }
+  @media (hover: hover) {
+    .mission:hover {
+      color: var(--color-kaki);
+    }
+    .mission:hover .mission-u {
+      background-size: 100% 1px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mission-ch,
+    .mission-u {
+      transition: none;
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-zinc-200 outline-zinc-300/50;

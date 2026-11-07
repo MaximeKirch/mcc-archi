@@ -26,9 +26,11 @@ interface SectionRowProps {
   children: React.ReactNode;
   // Full width, under the label and content.
   after?: React.ReactNode;
+  // Content uses the whole column, no 760px cap.
+  wide?: boolean;
 }
 
-export function SectionRow({ label, children, after }: SectionRowProps) {
+export function SectionRow({ label, children, after, wide }: SectionRowProps) {
   return (
     <div
       className={cn(
@@ -42,7 +44,9 @@ export function SectionRow({ label, children, after }: SectionRowProps) {
           {label}
         </h3>
       )}
-      {children && <div className="md:col-start-2 max-w-[760px]">{children}</div>}
+      {children && (
+        <div className={cn("md:col-start-2", !wide && "max-w-[760px]")}>{children}</div>
+      )}
       {after && <div className="mt-8 md:mt-10 md:col-span-full">{after}</div>}
     </div>
   );
