@@ -57,7 +57,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
             <RichText html={texte_secondaire} className={`mt-4 md:mt-5 ${bodyText}`} />
           )}
           {citation && (
-            <blockquote className="mt-5 md:mt-6 pl-3.5 md:pl-4 border-l border-neutral-300 text-[15px] leading-[26px] md:text-base md:leading-7 font-medium italic text-neutral-900">
+            <blockquote className="texte-justifie mt-5 md:mt-6 pl-3.5 md:pl-4 border-l border-neutral-300 text-[15px] leading-[26px] md:text-base md:leading-7 font-medium italic text-neutral-900">
               « {citation} »
             </blockquote>
           )}
@@ -88,7 +88,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
         <>
           {bloc.intro && <RichText html={bloc.intro} className={bodyText} />}
           {elements.length > 0 && (
-            <ul className="mt-3.5 md:mt-4 list-disc pl-[18px] md:pl-5 text-[15px] leading-[26px] md:text-base md:leading-7 text-neutral-700">
+            <ul className="texte-justifie mt-3.5 md:mt-4 list-disc pl-[18px] md:pl-5 text-[15px] leading-[26px] md:text-base md:leading-7 text-neutral-700">
               {elements.map((element, i) => (
                 <li key={i} className="mb-2.5 last:mb-0">
                   {element.titre && (
@@ -115,7 +115,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
           {elements.map((d, i) => (
             <div
               key={i}
-              className="py-3.5 border-b border-line md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-x-6"
+              className="py-3.5 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-x-6"
             >
               <dt className="font-mono text-[13px] tracking-[0.65px] uppercase text-kaki">
                 {d.lieu}
@@ -139,7 +139,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       return (
         // One of the two framed blocks the client asked to keep.
         <div className="border border-line-kaki p-5 md:px-8 md:py-7 md:flex md:items-center md:justify-between md:gap-6">
-          <p className="text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-800">
+          <p className="texte-justifie text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-800">
             {bloc.texte}
           </p>
           {bloc.email && (
