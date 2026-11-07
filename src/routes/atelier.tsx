@@ -18,6 +18,7 @@ import {
 } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
 import { Carousel } from "#/components/page/Carousel.tsx";
+import { MissionAccordion } from "#/components/page/MissionAccordion.tsx";
 
 export const Route = createFileRoute("/atelier")({
   loader: async ({ context }) => {
@@ -34,6 +35,16 @@ export const Route = createFileRoute("/atelier")({
 });
 
 const bodyText = "text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700";
+
+function missionsOf(bloc: AtelierBloc) {
+  if (bloc.acf_fc_layout !== "missions") return [];
+  return asList(bloc.elements)
+    .map((m) => ({ libelle: m.libelle?.trim() ?? "", definition: m.definition?.trim() ?? "" }))
+    .filter((m) => m.libelle);
+}
+
+// Without any definition, missions stay a plain list.
+const isAccordion = (bloc: AtelierBloc) => missionsOf(bloc).some((m) => m.definition);
 
 // Null when the block has nothing to show.
 function blocContent(bloc: AtelierBloc): React.ReactNode {
@@ -131,8 +142,13 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
     }
 
     case "missions": {
-      const missions = asList(bloc.elements).map((m) => m.libelle).filter(Boolean);
-      return missions.length ? <MissionList items={missions} /> : null;
+      const missions = missionsOf(bloc);
+      if (!missions.length) return null;
+      return isAccordion(bloc) ? (
+        <MissionAccordion items={missions} />
+      ) : (
+        <MissionList items={missions.map((m) => m.libelle)} />
+      );
     }
 
     case "encadre":
@@ -178,6 +194,7 @@ function AtelierComponent() {
           label: bloc.titre,
           content: blocContent(bloc),
           after: blocAfter(bloc),
+          wide: isAccordion(bloc),
         }))
         .filter((row) => row.content || row.after),
     }))
@@ -202,7 +219,7 @@ function AtelierComponent() {
           title={section.title}
         >
           {section.rows.map((row, j) => (
-            <SectionRow key={j} label={row.label} after={row.after}>
+            <SectionRow key={j} label={row.label} after={row.after} wide={row.wide}>
               {row.content}
             </SectionRow>
           ))}
