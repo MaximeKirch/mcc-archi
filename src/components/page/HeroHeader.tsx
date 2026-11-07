@@ -29,10 +29,10 @@ export function HeroHeader({ name, architect, intro = DEFAULT_INTRO, labels }: H
           <h1 className="js-header-title text-[clamp(2rem,10.5vw,3rem)] md:text-7xl font-semibold tracking-tighter md:tracking-[0.065em] uppercase leading-[1.2] text-kaki">
             {firstWord}{" "}
           </h1>
-          <p className="js-header-title mb-4 mt-6 text-kaki text-sm tracking-[0.065em] uppercase font-mono ">
+          <p className="js-header-title mb-4 mt-6 text-kaki text-xs tracking-[0.065em] uppercase font-mono ">
             {architect} | {labels.titre_architecte}
           </p>
-          <p className="js-header-fade hidden lg:block mt-auto w-[436px] text-sm leading-[25px] font-light text-neutral-700 text-justify">
+          <p className="js-header-fade hidden lg:block mt-auto w-[436px] text-sm leading-[25px] font-light text-neutral-700 texte-justifie">
             {intro}
           </p>
         </div>
@@ -63,7 +63,7 @@ export function HeroHeader({ name, architect, intro = DEFAULT_INTRO, labels }: H
         <p className="mb-4 text-kaki text-sm tracking-widest uppercase font-mono">
           {labels.localisation}
         </p>
-        <p className="mb-3 text-[15px] leading-[22px] font-light text-neutral-700">
+        <p className="texte-justifie mb-3 text-[15px] leading-[22px] font-light text-neutral-700">
           {intro}
         </p>
         <nav aria-label="Navigation principale" className="flex flex-col gap-8 py-4">

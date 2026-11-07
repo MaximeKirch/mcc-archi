@@ -87,7 +87,7 @@ export function ProjectDetail({ project, labels }: ProjectDetailProps) {
               delay={0.7}
             />
             <div
-              className="text-neutral-600 leading-relaxed text-base md:text-lg space-y-4 font-light max-w-2xl"
+              className="texte-justifie text-neutral-600 leading-relaxed text-base md:text-lg space-y-4 font-light max-w-2xl"
               dangerouslySetInnerHTML={{ __html: project.acf.description }}
             />
           </div>
