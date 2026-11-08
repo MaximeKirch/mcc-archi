@@ -30,21 +30,15 @@ export function Section({ id, num, title, children }: SectionProps) {
 interface SectionRowProps {
   label: string;
   children: React.ReactNode;
-  // Full width, under the label and content.
-  after?: React.ReactNode;
   // Content uses the whole column, no 760px cap.
   wide?: boolean;
 }
 
-export function SectionRow({ label, children, after, wide }: SectionRowProps) {
+export function SectionRow({ label, children, wide }: SectionRowProps) {
   return (
     <div
-      className={cn(
-        // Label and content first line share the same cap top.
-        "py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start",
-        // Ends the section: 40px to the next separator, like its top (96 - 56).
-        after && "md:last:-mb-14",
-      )}
+      // Label and content first line share the same cap top.
+      className="py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start"
     >
       {label && (
         <h3
@@ -56,7 +50,6 @@ export function SectionRow({ label, children, after, wide }: SectionRowProps) {
       {children && (
         <div className={cn("md:col-start-2", capTop, !wide && "max-w-[760px]")}>{children}</div>
       )}
-      {after && <div className="mt-8 md:mt-10 md:col-span-full">{after}</div>}
     </div>
   );
 }
