@@ -51,7 +51,11 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
     case "presentation":
     case "presentation_carrousel": {
       const { accroche, texte_principal, texte_secondaire, citation, texte_final } = bloc;
-      if (!(accroche || texte_principal || texte_secondaire || citation || texte_final)) return null;
+      const slides = asList(bloc.carrousel)
+        .map((s) => ({ ...s, image: normalizeImage(s.image) }))
+        .filter((s) => s.image || s.titre || s.texte);
+      if (!(accroche || texte_principal || texte_secondaire || citation || texte_final || slides.length))
+        return null;
       return (
         <>
           {accroche && (
@@ -71,6 +75,11 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
             </blockquote>
           )}
           {texte_final && <RichText html={texte_final} className={`mt-5 md:mt-6 ${bodyText}`} />}
+          {slides.length > 0 && (
+            <div className="mt-8 md:mt-10 first:mt-0">
+              <Carousel slides={slides} label={bloc.titre || "Carrousel"} />
+            </div>
+          )}
         </>
       );
     }
@@ -177,17 +186,6 @@ function LeadingYear({ text }: { text: string }) {
   );
 }
 
-// Full-width part under the block, null when empty.
-function blocAfter(bloc: AtelierBloc): React.ReactNode {
-  if (bloc.acf_fc_layout !== "presentation" && bloc.acf_fc_layout !== "presentation_carrousel")
-    return null;
-  const slides = asList(bloc.carrousel)
-    .map((s) => ({ ...s, image: normalizeImage(s.image) }))
-    .filter((s) => s.image || s.titre || s.texte);
-  if (!slides.length) return null;
-  return <Carousel slides={slides} label={bloc.titre || "Carrousel"} />;
-}
-
 function AtelierComponent() {
   const { data: page } = useSuspenseQuery(atelierPageQueryOptions);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -199,10 +197,9 @@ function AtelierComponent() {
         .map((bloc) => ({
           label: bloc.titre,
           content: blocContent(bloc),
-          after: blocAfter(bloc),
           wide: bloc.acf_fc_layout === "missions",
         }))
-        .filter((row) => row.content || row.after),
+        .filter((row) => row.content),
     }))
     .filter((section) => section.rows.length > 0);
   const ids = sectionIds(visible);
@@ -225,7 +222,7 @@ function AtelierComponent() {
           title={section.title}
         >
           {section.rows.map((row, j) => (
-            <SectionRow key={j} label={row.label} after={row.after} wide={row.wide}>
+            <SectionRow key={j} label={row.label} wide={row.wide}>
               {row.content}
             </SectionRow>
           ))}
