@@ -1,5 +1,11 @@
 import { cn } from "#/lib/utils.ts";
 
+// Desktop: cuts the line box down to cap height, so tops line up on the letters.
+export const capTop = "md:[text-box:trim-start_cap_alphabetic]";
+
+// Space under a block title, same as above it (row padding).
+export const titleGap = "mb-7 md:mb-10";
+
 interface SectionProps {
   id: string;
   num: string;
@@ -34,33 +40,24 @@ export function SectionRow({ label, children, after, wide }: SectionRowProps) {
   return (
     <div
       className={cn(
-        "py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12",
+        // Label and content first line share the same cap top.
+        "py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start",
         // Ends the section: 40px to the next separator, like its top (96 - 56).
         after && "md:last:-mb-14",
       )}
     >
       {label && (
-        <h3 className="mb-3.5 md:mb-0 md:mt-1.5 font-mono text-[11px] leading-4 tracking-[1.4px] uppercase text-neutral-500">
+        <h3
+          className={`mb-3.5 md:mb-0 font-mono text-[13px] leading-5 tracking-[1.4px] uppercase text-neutral-500 ${capTop}`}
+        >
           {label}
         </h3>
       )}
       {children && (
-        <div className={cn("md:col-start-2", !wide && "max-w-[760px]")}>{children}</div>
+        <div className={cn("md:col-start-2", capTop, !wide && "max-w-[760px]")}>{children}</div>
       )}
       {after && <div className="mt-8 md:mt-10 md:col-span-full">{after}</div>}
     </div>
-  );
-}
-
-export function MissionList({ items }: { items: string[] }) {
-  return (
-    <ul className="list-disc pl-[18px] md:pl-5 text-[15px] leading-[26px] md:text-base md:leading-7 font-light text-neutral-700 md:grid md:grid-flow-col md:grid-rows-[repeat(4,auto)] md:auto-cols-fr md:gap-x-12">
-      {items.map((item, i) => (
-        <li key={i} className="mb-1.5">
-          {item}
-        </li>
-      ))}
-    </ul>
   );
 }
 

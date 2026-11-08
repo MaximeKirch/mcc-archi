@@ -64,7 +64,7 @@ export function ContactForm({
 
   if (status === "sent") {
     return (
-      <p role="status" className="mt-8 max-w-[640px] text-lg leading-7 font-light text-neutral-800">
+      <p role="status" className="texte-justifie mt-8 max-w-[640px] text-lg leading-7 font-light text-neutral-800">
         {labels.confirmation}
       </p>
     );
