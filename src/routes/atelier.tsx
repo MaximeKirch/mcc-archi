@@ -49,7 +49,8 @@ const isAccordion = (bloc: AtelierBloc) => missionsOf(bloc).some((m) => m.defini
 // Null when the block has nothing to show.
 function blocContent(bloc: AtelierBloc): React.ReactNode {
   switch (bloc.acf_fc_layout) {
-    case "presentation": {
+    case "presentation":
+    case "presentation_carrousel": {
       const { accroche, texte_principal, texte_secondaire, citation, texte_final } = bloc;
       if (!(accroche || texte_principal || texte_secondaire || citation || texte_final)) return null;
       return (
@@ -174,7 +175,8 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
 
 // Full-width part under the block, null when empty.
 function blocAfter(bloc: AtelierBloc): React.ReactNode {
-  if (bloc.acf_fc_layout !== "presentation") return null;
+  if (bloc.acf_fc_layout !== "presentation" && bloc.acf_fc_layout !== "presentation_carrousel")
+    return null;
   const slides = asList(bloc.carrousel)
     .map((s) => ({ ...s, image: normalizeImage(s.image) }))
     .filter((s) => s.image || s.titre || s.texte);
