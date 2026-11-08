@@ -1,4 +1,6 @@
 import { useId, useState } from "react";
+import { cn } from "#/lib/utils.ts";
+import { capTop } from "./Section.tsx";
 
 export interface Mission {
   libelle: string;
@@ -6,10 +8,11 @@ export interface Mission {
 }
 
 const COLUMNS = 3;
+const MIN_ROWS = 3;
 
-// Desktop: filled column by column, each column grows on its own.
+// Desktop: filled column by column, 3 columns max, at least 3 missions each (12 -> 4/4/4, 6 -> 3/3).
 function toColumns<T>(items: T[]): T[][] {
-  const size = Math.ceil(items.length / COLUMNS);
+  const size = Math.max(MIN_ROWS, Math.ceil(items.length / COLUMNS));
   return Array.from({ length: COLUMNS }, (_, c) => items.slice(c * size, (c + 1) * size)).filter(
     (column) => column.length,
   );
@@ -19,7 +22,7 @@ function toColumns<T>(items: T[]): T[][] {
 function Label({ text, chevron }: { text: string; chevron: boolean }) {
   const cut = text.lastIndexOf(" ") + 1;
   return (
-    <>
+    <span className="mission-mot">
       {cut > 0 && <span className="mission-u">{text.slice(0, cut)}</span>}
       <span className="whitespace-nowrap">
         <span className="mission-u">{text.slice(cut)}</span>
@@ -40,11 +43,13 @@ function Label({ text, chevron }: { text: string; chevron: boolean }) {
           </svg>
         )}
       </span>
-    </>
+    </span>
   );
 }
 
-const word = "py-[9px] md:py-1.5 text-[15px] leading-[26px] md:leading-7 font-light";
+const word = "py-[9px] font-bold md:py-1.5 text-[15px] leading-6 md:text-base md:leading-[26px]";
+// First row of each column: no top padding, cap top on the grid top.
+const firstWord = cn("md:pt-0", capTop);
 
 export function MissionAccordion({ items }: { items: Mission[] }) {
   const baseId = useId();
@@ -52,13 +57,14 @@ export function MissionAccordion({ items }: { items: Mission[] }) {
   const indexed = items.map((item, index) => ({ ...item, index }));
 
   return (
-    <div className="md:grid md:grid-cols-3 md:gap-x-4 md:items-start">
+    <div className="md:grid md:grid-cols-3 md:gap-x-6 md:items-start">
       {toColumns(indexed).map((column, c) => (
         <ul key={c}>
-          {column.map(({ libelle, definition, index }) => {
+          {column.map(({ libelle, definition, index }, i) => {
+            const first = i === 0 && firstWord;
             if (!definition) {
               return (
-                <li key={index} className={`${word} text-neutral-700`}>
+                <li key={index} className={cn(word, first, "text-neutral-700")}>
                   <Label text={libelle} chevron={false} />
                 </li>
               );
@@ -74,7 +80,7 @@ export function MissionAccordion({ items }: { items: Mission[] }) {
                   aria-expanded={open}
                   aria-controls={panelId}
                   onClick={() => setOpenIndex(open ? null : index)}
-                  className={`mission block w-full text-left cursor-pointer ${word}`}
+                  className={cn("mission block w-full text-left cursor-pointer", word, first)}
                 >
                   <Label text={libelle} chevron />
                 </button>
@@ -83,7 +89,7 @@ export function MissionAccordion({ items }: { items: Mission[] }) {
                   role="region"
                   aria-labelledby={buttonId}
                   hidden={!open}
-                  className="pb-3 text-sm leading-6 font-light italic text-neutral-700 whitespace-pre-line"
+                  className="texte-justifie pb-3 md:pr-6 text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-500 whitespace-pre-line"
                 >
                   {definition}
                 </div>

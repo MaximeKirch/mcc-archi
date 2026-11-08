@@ -20,7 +20,7 @@ function StatusPage({ code, navLabel, title, text, children }: StatusPageProps) 
         {title}
       </h1>
       <div className="mt-6 md:mt-8 border-t border-line-kaki" />
-      <p className="mt-6 md:mt-8 max-w-[520px] text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-700">
+      <p className="texte-justifie mt-6 md:mt-8 max-w-[520px] text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-700">
         {text}
       </p>
       <div className="mt-4 md:mt-6 flex flex-wrap gap-x-8 gap-y-2">

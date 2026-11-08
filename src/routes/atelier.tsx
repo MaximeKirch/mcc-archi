@@ -6,15 +6,16 @@ import { seoHead } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
-import { sectionIds } from "#/lib/utils.ts";
+import { sectionIds, splitLeadingYear } from "#/lib/utils.ts";
 import type { AtelierBloc } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import {
-  MissionList,
   RichText,
   Section,
   SectionRow,
+  capTop,
+  titleGap,
 } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
 import { Carousel } from "#/components/page/Carousel.tsx";
@@ -34,6 +35,7 @@ export const Route = createFileRoute("/atelier")({
   component: AtelierComponent,
 });
 
+// The one body style, after "Une approche analytique".
 const bodyText = "text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700";
 
 function missionsOf(bloc: AtelierBloc) {
@@ -42,9 +44,6 @@ function missionsOf(bloc: AtelierBloc) {
     .map((m) => ({ libelle: m.libelle?.trim() ?? "", definition: m.definition?.trim() ?? "" }))
     .filter((m) => m.libelle);
 }
-
-// Without any definition, missions stay a plain list.
-const isAccordion = (bloc: AtelierBloc) => missionsOf(bloc).some((m) => m.definition);
 
 // Null when the block has nothing to show.
 function blocContent(bloc: AtelierBloc): React.ReactNode {
@@ -56,21 +55,18 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       return (
         <>
           {accroche && (
-            <h4 className="mb-3.5 md:mb-5 text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki">
+            <h4 className={`${titleGap} text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki`}>
               {accroche}
             </h4>
           )}
           {texte_principal && (
-            <RichText
-              html={texte_principal}
-              className="text-lg leading-7 md:text-xl md:leading-8 text-neutral-700"
-            />
+            <RichText html={texte_principal} className={bodyText} />
           )}
           {texte_secondaire && (
             <RichText html={texte_secondaire} className={`mt-4 md:mt-5 ${bodyText}`} />
           )}
           {citation && (
-            <blockquote className="texte-justifie mt-5 md:mt-6 pl-3.5 md:pl-4 border-l border-neutral-300 text-[15px] leading-[26px] md:text-base md:leading-7 font-medium italic text-neutral-900">
+            <blockquote className="texte-justifie mt-5 md:mt-6 pl-3.5 md:pl-4 border-l border-neutral-300 text-[15px] leading-6 md:text-base md:leading-[26px] italic text-neutral-700">
               « {citation} »
             </blockquote>
           )}
@@ -101,7 +97,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
         <>
           {bloc.intro && <RichText html={bloc.intro} className={bodyText} />}
           {elements.length > 0 && (
-            <ul className="texte-justifie mt-3.5 md:mt-4 list-disc pl-[18px] md:pl-5 text-[15px] leading-[26px] md:text-base md:leading-7 text-neutral-700">
+            <ul className={`texte-justifie mt-3.5 md:mt-4 list-disc pl-[18px] md:pl-5 ${bodyText}`}>
               {elements.map((element, i) => (
                 <li key={i} className="mb-2.5 last:mb-0">
                   {element.titre && (
@@ -128,12 +124,12 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
           {elements.map((d, i) => (
             <div
               key={i}
-              className="py-3.5 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-x-6"
+              className="py-3.5 first:pt-0 last:pb-0 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-x-6 md:items-start"
             >
-              <dt className="font-mono text-[13px] tracking-[0.65px] uppercase text-kaki">
-                {d.lieu}
+              <dt className={`font-mono text-[13px] leading-5 tracking-[0.65px] uppercase text-kaki ${capTop}`}>
+                <LeadingYear text={d.lieu} />
               </dt>
-              <dd className="mt-1 md:mt-0 text-[15px] leading-[22px] md:text-base md:leading-6 font-light text-neutral-800">
+              <dd className={`texte-justifie mt-1 md:mt-0 text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700 ${capTop}`}>
                 {d.intitule}
               </dd>
             </div>
@@ -145,11 +141,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
     case "missions": {
       const missions = missionsOf(bloc);
       if (!missions.length) return null;
-      return isAccordion(bloc) ? (
-        <MissionAccordion items={missions} />
-      ) : (
-        <MissionList items={missions.map((m) => m.libelle)} />
-      );
+      return <MissionAccordion items={missions} />;
     }
 
     case "encadre":
@@ -157,7 +149,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       return (
         // One of the two framed blocks the client asked to keep.
         <div className="border border-line-kaki p-5 md:px-8 md:py-7 md:flex md:items-center md:justify-between md:gap-6">
-          <p className="texte-justifie text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-800">
+          <p className="texte-justifie text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700">
             {bloc.texte}
           </p>
           {bloc.email && (
@@ -171,6 +163,18 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
     default:
       return null;
   }
+}
+
+// "2025 - Diplôme…": only the year in bold.
+function LeadingYear({ text }: { text: string }) {
+  const [year, rest] = splitLeadingYear(text);
+  if (!year) return text;
+  return (
+    <>
+      <strong className="font-bold">{year}</strong>
+      {rest}
+    </>
+  );
 }
 
 // Full-width part under the block, null when empty.
@@ -196,7 +200,7 @@ function AtelierComponent() {
           label: bloc.titre,
           content: blocContent(bloc),
           after: blocAfter(bloc),
-          wide: isAccordion(bloc),
+          wide: bloc.acf_fc_layout === "missions",
         }))
         .filter((row) => row.content || row.after),
     }))

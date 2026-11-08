@@ -55,3 +55,9 @@ export function sectionIds(sections: { titre: string; ancre: string }[]): string
     return count ? `${id}-${count + 1}` : id
   })
 }
+
+// "2019-2021 - Licence" -> ["2019-2021", " - Licence"]; no leading year -> ["", text].
+export function splitLeadingYear(text: string): [string, string] {
+  const year = /^\s*\d{4}(?:\s*[-–/]\s*\d{4})?(?!\d)/.exec(text)?.[0] ?? ''
+  return [year, text.slice(year.length)]
+}

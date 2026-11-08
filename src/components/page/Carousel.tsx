@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { WordPressImage } from "#/types/wordpress.ts";
 import { cn } from "#/lib/utils.ts";
 import { ResponsiveImage } from "./ResponsiveImage.tsx";
-import { RichText } from "./Section.tsx";
+import { RichText, titleGap } from "./Section.tsx";
 
 export interface Slide {
   image: WordPressImage | null;
@@ -140,7 +140,9 @@ export function Carousel({ slides, label }: CarouselProps) {
               )}
               <div className="mt-4 md:mt-0 md:row-start-1 md:col-start-2 max-w-[760px]">
                 {slide.titre && (
-                  <h4 className="mb-3.5 md:mb-4 text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki">
+                  <h4
+                    className={`${titleGap} text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki`}
+                  >
                     {slide.titre}
                   </h4>
                 )}

@@ -47,6 +47,19 @@ describe("MissionAccordion", () => {
     expect(columns[1].textContent).toMatch(/^M5/);
   });
 
+  it("keeps at least 3 missions per column: 6 -> 3 / 3, 12 -> 4 / 4 / 4", () => {
+    const counts = (n: number) => {
+      const many = Array.from({ length: n }, (_, i) => ({ libelle: `M${i}`, definition: "" }));
+      const { container, unmount } = render(<MissionAccordion items={many} />);
+      const result = [...container.querySelectorAll("ul")].map((ul) => ul.children.length);
+      unmount();
+      return result;
+    };
+    expect(counts(6)).toEqual([3, 3]);
+    expect(counts(12)).toEqual([4, 4, 4]);
+    expect(counts(7)).toEqual([3, 3, 1]);
+  });
+
   it("keeps the last word with the chevron", () => {
     render(<MissionAccordion items={[{ libelle: "Permis de construire (PC)", definition: "d" }]} />);
     const nowrap = screen.getByRole("button").querySelector(".whitespace-nowrap")!;
