@@ -50,6 +50,16 @@ describe("Carousel", () => {
     expect(inert).toHaveLength(2);
   });
 
+  it("puts one title above the image, with or without one", () => {
+    const image = { url: "/a.jpg", alt: "", width: 800, height: 600, sizes: {} };
+    const { container } = render(
+      <Carousel slides={[{ ...slides[0], image }, slides[1]]} label="Test" />,
+    );
+    const titles = container.querySelectorAll("h4");
+    expect(titles).toHaveLength(2);
+    expect(titles[0].nextElementSibling?.tagName).toBe("IMG");
+  });
+
   it("keeps focus on the same button in the new slide", () => {
     const { container } = render(<Carousel slides={slides} label="Test" />);
     control(container, "next").focus();

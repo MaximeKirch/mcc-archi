@@ -6,7 +6,7 @@ import { seoHead } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
-import { sectionIds, splitLeadingYear } from "#/lib/utils.ts";
+import { cn, sectionIds, splitLeadingYear } from "#/lib/utils.ts";
 import type { AtelierBloc } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
@@ -15,6 +15,7 @@ import {
   Section,
   SectionRow,
   capTop,
+  rowLabel,
   titleGap,
 } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
@@ -37,6 +38,13 @@ export const Route = createFileRoute("/atelier")({
 
 // The one body style, after "Une approche analytique".
 const bodyText = "text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700";
+
+type DiplomesBloc = Extract<AtelierBloc, { acf_fc_layout: "diplomes" }>;
+type Diploma = { lieu: string; intitule: string };
+
+const diplomesGroupe = "Diplômes et formations";
+
+const isDiplomes = (bloc: AtelierBloc): bloc is DiplomesBloc => bloc.acf_fc_layout === "diplomes";
 
 function missionsOf(bloc: AtelierBloc) {
   if (bloc.acf_fc_layout !== "missions") return [];
@@ -76,7 +84,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
           )}
           {texte_final && <RichText html={texte_final} className={`mt-5 md:mt-6 ${bodyText}`} />}
           {slides.length > 0 && (
-            <div className="mt-8 md:mt-10 first:mt-0">
+            <div className="mt-6 md:mt-6 first:mt-0">
               <Carousel slides={slides} label={bloc.titre || "Carrousel"} />
             </div>
           )}
@@ -128,23 +136,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
     case "diplomes": {
       const elements = asList(bloc.elements);
       if (!elements.length) return null;
-      return (
-        <dl>
-          {elements.map((d, i) => (
-            <div
-              key={i}
-              className="py-3.5 first:pt-0 last:pb-0 md:grid md:grid-cols-[200px_minmax(0,1fr)] md:gap-x-6 md:items-start"
-            >
-              <dt className={`font-mono text-[13px] leading-5 tracking-[0.65px] uppercase text-kaki ${capTop}`}>
-                <LeadingYear text={d.lieu} />
-              </dt>
-              <dd className={`texte-justifie mt-1 md:mt-0 text-[15px] leading-6 md:text-base md:leading-[26px] text-neutral-700 ${capTop}`}>
-                {d.intitule}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      );
+      return <DiplomaList items={elements} trimFirst={capTop} />;
     }
 
     case "missions": {
@@ -174,6 +166,79 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
   }
 }
 
+// trimFirst: cap-top trim of the first title, when it starts the row.
+function DiplomaList({ items, trimFirst }: { items: Diploma[]; trimFirst: string }) {
+  return (
+    <dl className="flex flex-col gap-5 lg:gap-6">
+      {items.map((d, i) => (
+        <div key={i}>
+          <dt
+            className={cn(
+              "font-mono text-[13px] leading-5 tracking-[0.65px] uppercase text-kaki",
+              i === 0 && trimFirst,
+            )}
+          >
+            <LeadingYear text={d.lieu} />
+          </dt>
+          <dd className="mt-1 text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-700">
+            {d.intitule}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+// Two diploma blocks side by side from lg; stacked under their own titles below.
+function DiplomaColumns({ blocs }: { blocs: DiplomesBloc[] }) {
+  return (
+    <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
+      {blocs.map((bloc, i) => (
+        <div key={i} className="mt-[38px] first:mt-0 lg:mt-0">
+          {bloc.titre && <h4 className={cn(rowLabel, "mb-6 lg:sr-only", capTop)}>{bloc.titre}</h4>}
+          <DiplomaList
+            items={asList(bloc.elements)}
+            trimFirst={bloc.titre ? "lg:[text-box:trim-start_cap_alphabetic]" : capTop}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+interface Row {
+  label: string;
+  content: React.ReactNode;
+  wide?: boolean;
+  labelClassName?: string;
+}
+
+// Two diploma blocks in a row share one row.
+function rowsOf(blocs: AtelierBloc[]): Row[] {
+  const kept = blocs.filter((b) => !isDiplomes(b) || asList(b.elements).length);
+  const rows: Row[] = [];
+  for (let i = 0; i < kept.length; i++) {
+    const bloc = kept[i];
+    const next = kept[i + 1];
+    if (isDiplomes(bloc) && next && isDiplomes(next)) {
+      rows.push({
+        label: bloc.titre_groupe?.trim() || diplomesGroupe,
+        // Mobile shows the two block titles instead.
+        labelClassName: "max-md:sr-only",
+        content: <DiplomaColumns blocs={[bloc, next]} />,
+      });
+      i++;
+      continue;
+    }
+    rows.push({
+      label: bloc.titre,
+      content: blocContent(bloc),
+      wide: bloc.acf_fc_layout === "missions",
+    });
+  }
+  return rows.filter((row) => row.content);
+}
+
 // "2025 - Diplôme…": only the year in bold.
 function LeadingYear({ text }: { text: string }) {
   const [year, rest] = splitLeadingYear(text);
@@ -193,13 +258,7 @@ function AtelierComponent() {
   const visible = asList(page?.acf.sections)
     .map((section) => ({
       ...section,
-      rows: asList(section.blocs)
-        .map((bloc) => ({
-          label: bloc.titre,
-          content: blocContent(bloc),
-          wide: bloc.acf_fc_layout === "missions",
-        }))
-        .filter((row) => row.content),
+      rows: rowsOf(asList(section.blocs)),
     }))
     .filter((section) => section.rows.length > 0);
   const ids = sectionIds(visible);
@@ -222,7 +281,7 @@ function AtelierComponent() {
           title={section.title}
         >
           {section.rows.map((row, j) => (
-            <SectionRow key={j} label={row.label} wide={row.wide}>
+            <SectionRow key={j} label={row.label} wide={row.wide} labelClassName={row.labelClassName}>
               {row.content}
             </SectionRow>
           ))}
