@@ -27,7 +27,7 @@ export function PageNav({
       }`}
     >
       <nav className="max-w-[84rem] mx-auto px-4 md:px-8">
-        <div className="py-5 md:py-6 flex items-center justify-between border-b border-line font-mono text-xs tracking-[0.6px]">
+        <div className="py-5 md:py-6 flex items-center justify-between border-b border-line-kaki font-mono text-xs tracking-[0.6px]">
           <Link
             to="/"
             className="inline-flex items-center min-h-11 md:min-h-0 uppercase text-kaki hover:text-kaki-dark transition-colors"

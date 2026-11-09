@@ -18,7 +18,7 @@ interface SectionProps {
 export function Section({ id, num, title, children }: SectionProps) {
   return (
     <section id={id} className="mt-14 md:mt-24 -scroll-mt-px">
-      <div className="border-t border-line-kaki pt-4 md:pt-6 flex items-baseline gap-3 md:gap-5">
+      <div className="border-t border-kaki pt-4 md:pt-6 flex items-baseline gap-3 md:gap-5">
         <span className="font-mono text-[13px] md:text-sm text-neutral-500">{num}</span>
         <h2 className="font-mono text-lg leading-[26px] tracking-[1.8px] md:text-2xl md:leading-8 md:tracking-[2.4px] font-medium uppercase text-kaki">
           {title}
@@ -41,7 +41,7 @@ export function SectionRow({ label, children, wide, labelClassName }: SectionRow
   return (
     <div
       // Label and content first line share the same cap top.
-      className="py-7 md:py-10 border-t border-line md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start"
+      className="py-7 md:py-10 border-t border-line-kaki md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start"
     >
       {label && (
         <h3 className={cn(rowLabel, "mb-3.5 md:mb-0", capTop, labelClassName)}>

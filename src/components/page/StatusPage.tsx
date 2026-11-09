@@ -19,7 +19,7 @@ function StatusPage({ code, navLabel, title, text, children }: StatusPageProps) 
       <h1 className="mt-2 text-[44px] leading-[52px] tracking-[-2px] md:text-7xl md:leading-[86px] md:tracking-[-3.6px] font-semibold uppercase text-kaki [font-kerning:none]">
         {title}
       </h1>
-      <div className="mt-6 md:mt-8 border-t border-line-kaki" />
+      <div className="mt-6 md:mt-8 border-t border-kaki" />
       <p className="texte-justifie mt-6 md:mt-8 max-w-[520px] text-[17px] leading-[26px] md:text-lg md:leading-7 font-light text-neutral-700">
         {text}
       </p>
