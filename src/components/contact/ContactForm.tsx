@@ -134,7 +134,7 @@ export function ContactForm({
         <textarea
           name="message"
           rows={4}
-          placeholder={`${labels.champ_message}…`}
+          placeholder={labels.champ_placeholder_message}
           aria-invalid={!!errors.message}
           aria-describedby={describedBy("message")}
           className={`${inputClass} min-h-[120px] resize-none`}
