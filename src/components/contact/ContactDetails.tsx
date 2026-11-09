@@ -59,7 +59,7 @@ export function ContactDetails({
       )}
 
       {contact.mention_intervention && (
-        <InfoBlock label={contact.mention_intervention} extendedClassName="mt-1.5" />
+        <InfoBlock label={contact.mention_intervention} extendedClassName="mt-1.5 whitespace-pre-line" />
       )}
 
       {reseaux.length > 0 && (

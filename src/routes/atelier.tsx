@@ -67,7 +67,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       return (
         <>
           {accroche && (
-            <h4 className={`${titleGap} text-xl leading-7 tracking-[-0.5px] md:text-2xl md:leading-8 md:tracking-[-0.6px] font-semibold uppercase text-kaki`}>
+            <h4 className={`${titleGap} text-base leading-6 tracking-[-0.3px] md:text-xl md:leading-7 md:tracking-[-0.5px] font-semibold uppercase text-kaki`}>
               {accroche}
             </h4>
           )}
