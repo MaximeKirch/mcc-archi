@@ -23,9 +23,7 @@ export function PageHero({ title, image, anchors }: PageHeroProps) {
           </span>
         ))}
       </h1>
-      <div className="js-hero-line mt-6 md:mt-8 border-t border-kaki" />
-
-      <div className="mt-12 lg:mt-0 lg:flex-1 lg:min-h-0 lg:py-16 lg:grid lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-x-8">
+      <div className="mt-14 md:mt-24 lg:mt-0 lg:flex-1 lg:min-h-0 lg:py-24 lg:grid lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-x-8">
         {image && (
           <ResponsiveImage
             image={image}
@@ -50,27 +48,16 @@ export function usePageHeroAnimation(scope: RefObject<HTMLDivElement | null>) {
         y: "110%",
         duration: 1.1,
         stagger: 0.08,
-      })
-        .from(
-          ".js-hero-line",
-          {
-            scaleX: 0,
-            transformOrigin: "left center",
-            duration: 1.4,
-            ease: "power3.inOut",
-          },
-          "-=0.7",
-        )
-        .from(
-          ".js-hero-fade",
-          {
-            opacity: 0,
-            y: 30,
-            duration: 1,
-            stagger: 0.15,
-          },
-          "-=0.8",
-        );
+      }).from(
+        ".js-hero-fade",
+        {
+          opacity: 0,
+          y: 30,
+          duration: 1,
+          stagger: 0.15,
+        },
+        "-=0.1",
+      );
     },
     { scope },
   );
