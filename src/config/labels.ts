@@ -20,8 +20,9 @@ export const CONTACT_LABELS = {
   profil_particulier: "Particulier",
   profil_agence: "Agence d'architecture",
   champ_message: "Message",
+  champ_placeholder_message: "Dites nous en plus sur votre projet : localisation, type de mission, surface, budget, besoins, etc.",
   bouton: "Envoyer le message",
-  mention_donnees: "Vos données servent uniquement à vous répondre.",
+  mention_donnees: "Vos données nous servent uniquement à vous répondre.",
   confirmation:
     "Merci, votre message a bien été envoyé. Le studio vous répondra dans les meilleurs délais.",
 };
