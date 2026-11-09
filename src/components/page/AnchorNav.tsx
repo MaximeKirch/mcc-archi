@@ -7,9 +7,10 @@ export function AnchorNav({ anchors }: { anchors: Anchor[] }) {
   if (!anchors.length) return null;
 
   return (
+    // -mb cancels the last link's tap padding, so the gap below is measured from the text.
     <nav
       aria-label="Sous-parties de la page"
-      className="js-hero-fade flex flex-col gap-2 mt-4 lg:mt-0 lg:gap-8 lg:self-center lg:w-full"
+      className="js-hero-fade flex flex-col gap-2 mt-4 -mb-3.5 lg:my-0 lg:gap-8 lg:self-center lg:w-full"
     >
       {anchors.map((anchor, i) => (
         <a
