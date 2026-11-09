@@ -91,7 +91,12 @@ export type AtelierBloc = { titre: string } & (
   | { acf_fc_layout: "texte"; texte: string; texte_lien: string; cible_lien: string }
   | { acf_fc_layout: "liste"; intro: string; elements: AcfList<{ titre: string; texte: string }> }
   | { acf_fc_layout: "texte_riche"; contenu: string }
-  | { acf_fc_layout: "diplomes"; elements: AcfList<{ lieu: string; intitule: string }> }
+  | {
+      acf_fc_layout: "diplomes";
+      // Missing until the backend field ships.
+      titre_groupe?: string;
+      elements: AcfList<{ lieu: string; intitule: string }>;
+    }
   | {
       acf_fc_layout: "missions";
       // definition missing until the backend field ships.

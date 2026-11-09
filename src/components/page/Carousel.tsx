@@ -119,6 +119,11 @@ export function Carousel({ slides, label }: CarouselProps) {
                   : "absolute inset-x-0 top-0 invisible opacity-0 transition-[opacity,visibility]",
               )}
             >
+              {slide.titre && (
+                <h4 className="max-w-[calc(100%-24px)] text-base leading-5 mb-2 md:max-w-[calc(100%-32px)] md:text-lg md:leading-[22px] font-semibold uppercase tracking-[-0.2px] text-neutral-700">
+                  {slide.titre}
+                </h4>
+              )}
               {slide.image && (
                 <ResponsiveImage
                   image={slide.image}
@@ -158,12 +163,7 @@ export function Carousel({ slides, label }: CarouselProps) {
                   </div>
                 </div>
               )}
-              <div className="mt-3">
-                {slide.titre && (
-                  <h4 className="mb-4 text-xl leading-7 md:text-2xl md:leading-8 tracking-[-0.5px] font-semibold uppercase text-kaki">
-                    {slide.titre}
-                  </h4>
-                )}
+              <div className="mt-4 md:mt-3">
                 {slide.texte && (
                   <RichText
                     html={slide.texte}
