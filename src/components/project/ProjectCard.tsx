@@ -46,7 +46,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             />
           </div>
 
-          <div className="flex items-center justify-between pt-1 mt-1 border-t border-neutral-100 text-[11px] font-mono text-neutral-400">
+          <div className="flex items-center justify-between pt-1 mt-1 border-t border-line-kaki text-[11px] font-mono text-neutral-400">
             {project.acf.architecture_surface ? (
               <span>{project.acf.architecture_surface} m²</span>
             ) : null}

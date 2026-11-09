@@ -79,7 +79,7 @@ export function ProjectDetail({ project, labels }: ProjectDetailProps) {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-24 items-start border-b border-neutral-200 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-24 items-start border-b border-line-kaki pb-16">
           <div className="lg:col-span-2 space-y-6">
             <AnimatedTitle
               title={title}
@@ -102,7 +102,7 @@ export function ProjectDetail({ project, labels }: ProjectDetailProps) {
         <ProjectGallery images={gallery} projectTitle={title} />
       </main>
 
-      <footer className="border-t border-neutral-200/60 bg-neutral-100 py-12 mt-24 text-center text-xs text-neutral-400 font-mono">
+      <footer className="border-t border-line-kaki bg-neutral-100 py-12 mt-24 text-center text-xs text-neutral-400 font-mono">
         © {new Date().getFullYear()} — {siteConfig.name}. Tous droits réservés.
       </footer>
     </div>
