@@ -57,6 +57,8 @@ export function ProjectDetail({ project, labels }: ProjectDetailProps) {
         backLabel={labels.retour}
         rightLabel={`${labels.prefixe} / ${project.acf.title}`}
         sticky
+        bordered={false}
+        compactBack
       />
 
       <header
