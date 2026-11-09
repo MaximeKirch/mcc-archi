@@ -23,7 +23,7 @@ export function PageHero({ title, image, anchors }: PageHeroProps) {
           </span>
         ))}
       </h1>
-      <div className="js-hero-line mt-6 md:mt-8 border-t border-line-kaki" />
+      <div className="js-hero-line mt-6 md:mt-8 border-t border-kaki" />
 
       <div className="mt-12 lg:mt-0 lg:flex-1 lg:min-h-0 lg:py-16 lg:grid lg:grid-cols-2 lg:grid-rows-[minmax(0,1fr)] lg:gap-x-8">
         {image && (

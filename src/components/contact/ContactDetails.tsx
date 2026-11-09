@@ -33,7 +33,7 @@ export function ContactDetails({
   const reseaux = asList(contact.reseaux).filter((r) => r.url);
 
   return (
-    <div className="mt-12 pt-7 border-t border-neutral-200 flex flex-col gap-6 lg:mt-0 lg:pt-2 lg:pb-2 lg:pl-12 lg:border-t-0 lg:border-l lg:gap-7 lg:self-start">
+    <div className="mt-12 pt-7 border-t border-line-kaki flex flex-col gap-6 lg:mt-0 lg:pt-2 lg:pb-2 lg:pl-12 lg:border-t-0 lg:border-l lg:gap-7 lg:self-start">
       {contact.email && (
         <InfoBlock label={labels.titre_email}>
           <a href={`mailto:${contact.email}`} className={valueLink}>

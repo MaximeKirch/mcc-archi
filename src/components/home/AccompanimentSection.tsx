@@ -13,7 +13,7 @@ export function AccompanimentSection({
 
   return (
     <section className="mt-14 md:mt-24">
-      <div className="border-t border-line-kaki pt-6">
+      <div className="border-t border-kaki pt-6">
         <h2 className="font-mono text-lg leading-[26px] tracking-[1.8px] md:text-2xl md:leading-8 md:tracking-[2.4px] font-medium uppercase text-kaki">
           {title}
         </h2>
