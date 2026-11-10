@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { MissionsRow, toColumns } from "./MissionAccordion.tsx";
+import { MissionsRow } from "./MissionAccordion.tsx";
 
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) => (
@@ -64,14 +64,6 @@ describe("MissionsRow", () => {
     render(<MissionsRow label="Missions" colonnes={colonnes} />);
     expect(screen.queryByRole("button", { name: "Relevé" })).toBeNull();
     expect(screen.getByText("Relevé").closest("li")?.querySelector("svg")).toBeNull();
-  });
-
-  it("splits the old flat list: 5 / 5 / 4 for 14, at least 3 per column", () => {
-    const sizes = (n: number) => toColumns(Array.from({ length: n }, (_, i) => i)).map((c) => c.length);
-    expect(sizes(14)).toEqual([5, 5, 4]);
-    expect(sizes(6)).toEqual([3, 3]);
-    expect(sizes(12)).toEqual([4, 4, 4]);
-    expect(sizes(7)).toEqual([3, 3, 1]);
   });
 
   it("renders the columns as given, in order", () => {

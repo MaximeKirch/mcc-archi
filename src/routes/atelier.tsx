@@ -7,7 +7,7 @@ import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
 import { cn, sectionIds, splitLeadingYear } from "#/lib/utils.ts";
-import type { AcfList, AtelierBloc } from "#/types/wordpress.ts";
+import type { AtelierBloc } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import {
@@ -21,7 +21,7 @@ import {
 import { TextLink } from "#/components/page/TextLink.tsx";
 import { filledButtonClass } from "#/components/page/buttonStyles.ts";
 import { Carousel } from "#/components/page/Carousel.tsx";
-import { MissionsRow, toColumns } from "#/components/page/MissionAccordion.tsx";
+import { MissionsRow } from "#/components/page/MissionAccordion.tsx";
 import type { MissionColumn } from "#/components/page/MissionAccordion.tsx";
 
 export const Route = createFileRoute("/atelier")({
@@ -48,18 +48,16 @@ const diplomesGroupe = "Diplômes et formations";
 
 const isDiplomes = (bloc: AtelierBloc): bloc is DiplomesBloc => bloc.acf_fc_layout === "diplomes";
 
-const cleanMissions = (list: AcfList<{ libelle: string; definition?: string }> | undefined) =>
-  asList(list)
-    .map((m) => ({ libelle: m.libelle?.trim() ?? "", definition: m.definition?.trim() ?? "" }))
-    .filter((m) => m.libelle);
-
 function colonnesOf(bloc: AtelierBloc): MissionColumn[] {
   if (bloc.acf_fc_layout !== "missions") return [];
-  const colonnes = asList(bloc.colonnes)
-    .map((c) => ({ titre: c.titre?.trim() ?? "", missions: cleanMissions(c.missions) }))
+  return asList(bloc.colonnes)
+    .map((c) => ({
+      titre: c.titre?.trim() ?? "",
+      missions: asList(c.missions)
+        .map((m) => ({ libelle: m.libelle?.trim() ?? "", definition: m.definition?.trim() ?? "" }))
+        .filter((m) => m.libelle),
+    }))
     .filter((c) => c.missions.length);
-  if (asList(bloc.colonnes).length) return colonnes;
-  return toColumns(cleanMissions(bloc.elements)).map((missions) => ({ titre: "", missions }));
 }
 
 function formulesOf(bloc: AtelierBloc) {

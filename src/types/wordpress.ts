@@ -62,7 +62,7 @@ export interface WordPressImage {
   sizes: Record<string, string | number>;
 }
 
-export type AcfList<T> = T[] | false | "";
+type AcfList<T> = T[] | false | "";
 type AcfImage = WordPressImage | false | null;
 
 export interface CarouselSlide {
@@ -100,8 +100,6 @@ export type AtelierBloc = { titre: string } & (
   | {
       acf_fc_layout: "missions";
       colonnes?: AcfList<{ titre: string; missions: AcfList<{ libelle: string; definition: string }> }>;
-      // Old flat list, read until the migration has run.
-      elements?: AcfList<{ libelle: string; definition?: string }>;
       // puces: one bullet per line.
       formules?: AcfList<{ titre: string; texte: string; puces: string }>;
       lien_formules?: string;
