@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import { cn } from "#/lib/utils.ts";
-import { capTop, rowBase, rowLabel } from "./Section.tsx";
+import { accrocheClass, capTop, rowBase, rowLabel, titleGap } from "./Section.tsx";
 import { Link } from "@tanstack/react-router";
 import { filledButtonClass } from "./buttonStyles.ts";
 
@@ -49,7 +49,7 @@ function Label({ text, chevron }: { text: string; chevron: boolean }) {
   );
 }
 
-const columnHeader = "mb-1 md:mb-0 font-mono text-[13px] leading-5 tracking-[1.4px] uppercase text-kaki";
+const columnHeader = "mb-1 md:mb-0 font-mono text-[15px] leading-5 tracking-[1.4px] uppercase text-kaki";
 
 const word = "py-[9px] md:py-0 md:pb-3 font-bold text-[15px] leading-6 md:text-base md:leading-[26px]";
 
@@ -80,6 +80,7 @@ function FormuleCards({ formules, className }: { formules: Formule[]; className?
 
 interface MissionsRowProps {
   label: string;
+  accroche?: string;
   colonnes: MissionColumn[];
   formules?: Formule[];
   lienFormules?: string;
@@ -89,6 +90,7 @@ interface MissionsRowProps {
 // Below lg: classic accordion, definition under its mission.
 export function MissionsRow({
   label,
+  accroche,
   colonnes,
   formules = [],
   lienFormules = "Discuter de votre projet",
@@ -141,62 +143,60 @@ export function MissionsRow({
         {!hasFormules && aside}
       </div>
 
-      <div
-        className={cn(
-          "md:col-start-2 md:row-start-1 md:grid md:grid-cols-3 md:gap-x-4 md:items-start",
-          hasHeaders && "md:gap-y-4",
-        )}
-      >
-        {indexed.map(({ titre, missions }, c) => (
-          // Subgrid: headers share a row, so missions start level even if a title wraps.
-          <div
-            key={c}
-            className={cn(hasHeaders && "mt-6 first:mt-0 md:mt-0 md:grid md:grid-rows-subgrid md:row-span-2")}
-          >
-            {titre ? (
-              <h4 className={cn(columnHeader, capTop)}>{titre}</h4>
-            ) : (
-              hasHeaders && <div aria-hidden="true" className="hidden md:block" />
-            )}
-            <ul>
-              {missions.map(({ libelle, definition, index }, i) => {
-                const first = !hasHeaders && i === 0 && capTop;
-                if (!definition) {
+      <div className="md:col-start-2 md:row-start-1">
+        {accroche && <h4 className={cn(accrocheClass, titleGap, capTop)}>{accroche}</h4>}
+        <div className={cn("md:grid md:grid-cols-3 md:gap-x-4 md:items-start", hasHeaders && "md:gap-y-4")}>
+          {indexed.map(({ titre, missions }, c) => (
+            // Subgrid: headers share a row, so missions start level even if a title wraps.
+            <div
+              key={c}
+              className={cn(hasHeaders && "mt-6 first:mt-0 md:mt-0 md:grid md:grid-rows-subgrid md:row-span-2")}
+            >
+              {titre ? (
+                <h4 className={cn(columnHeader, capTop)}>{titre}</h4>
+              ) : (
+                hasHeaders && <div aria-hidden="true" className="hidden md:block" />
+              )}
+              <ul>
+                {missions.map(({ libelle, definition, index }, i) => {
+                  const first = !accroche && !hasHeaders && i === 0 && capTop;
+                  if (!definition) {
+                    return (
+                      <li key={index} className={cn(word, first, "text-neutral-700")}>
+                        <Label text={libelle} chevron={false} />
+                      </li>
+                    );
+                  }
+                  const open = openIndex === index;
+                  const panelId = `${baseId}-panel-${index}`;
                   return (
-                    <li key={index} className={cn(word, first, "text-neutral-700")}>
-                      <Label text={libelle} chevron={false} />
+                    <li key={index}>
+                      <button
+                        type="button"
+                        id={buttonId(index)}
+                        aria-expanded={open}
+                        aria-controls={`${panelId} ${asideId}`}
+                        onClick={() => setOpenIndex(open ? null : index)}
+                        className={cn("mission block w-full text-left cursor-pointer", word, first)}
+                      >
+                        <Label text={libelle} chevron />
+                      </button>
+                      <div
+                        id={panelId}
+                        role="region"
+                        aria-labelledby={buttonId(index)}
+                        hidden={!open}
+                        className="lg:hidden texte-justifie pb-3 md:pr-6 text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-500 whitespace-pre-line"
+                      >
+                        {definition}
+                      </div>
                     </li>
                   );
-                }
-                const open = openIndex === index;
-                const panelId = `${baseId}-panel-${index}`;
-                return (
-                  <li key={index}>
-                    <button
-                      type="button"
-                      id={buttonId(index)}
-                      aria-expanded={open}
-                      aria-controls={`${panelId} ${asideId}`}
-                      onClick={() => setOpenIndex(open ? null : index)}
-                      className={cn("mission block w-full text-left cursor-pointer", word, first)}
-                    >
-                      <Label text={libelle} chevron />
-                    </button>
-                    <div
-                      id={panelId}
-                      role="region"
-                      aria-labelledby={buttonId(index)}
-                      hidden={!open}
-                      className="lg:hidden texte-justifie pb-3 md:pr-6 text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-500 whitespace-pre-line"
-                    >
-                      {definition}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
 
       {hasFormules && (

@@ -17,6 +17,7 @@ import {
   capTop,
   rowLabel,
   titleGap,
+  accrocheClass,
 } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
 import { filledButtonClass } from "#/components/page/buttonStyles.ts";
@@ -88,7 +89,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       return (
         <>
           {accroche && (
-            <h4 className={`${titleGap} text-base leading-6 tracking-[-0.3px] md:text-xl md:leading-7 md:tracking-[-0.5px] font-semibold uppercase text-kaki`}>
+            <h4 className={`${titleGap} ${accrocheClass}`}>
               {accroche}
             </h4>
           )}
@@ -166,6 +167,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       return (
         <MissionsRow
           label={bloc.titre}
+          accroche={bloc.accroche?.trim()}
           colonnes={colonnes}
           formules={formulesOf(bloc)}
           lienFormules={bloc.lien_formules?.trim() || undefined}
