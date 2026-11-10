@@ -64,9 +64,10 @@ function FormuleCards({ formules, className }: { formules: Formule[]; className?
           {f.titre && <h4 className="text-lg leading-[26px] font-bold">{f.titre}</h4>}
           {f.texte && <p className="texte-justifie text-sm leading-[22px] whitespace-pre-line">{f.texte}</p>}
           {f.puces.length > 0 && (
-            <ul className="texte-justifie list-disc pl-[18px] text-sm leading-6">
+            // Tighter wrapped lines, same 28px from one bullet to the next.
+            <ul className="texte-justifie list-disc pl-[18px] text-sm leading-5 italic">
               {f.puces.map((puce, j) => (
-                <li key={j} className="mb-1">
+                <li key={j} className="mb-2">
                   {puce}
                 </li>
               ))}
