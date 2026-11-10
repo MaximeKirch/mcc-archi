@@ -7,7 +7,7 @@ import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
 import { cn, sectionIds, splitLeadingYear } from "#/lib/utils.ts";
-import type { AtelierBloc } from "#/types/wordpress.ts";
+import type { AcfList, AtelierBloc } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
 import {
@@ -19,8 +19,10 @@ import {
   titleGap,
 } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
+import { filledButtonClass } from "#/components/page/buttonStyles.ts";
 import { Carousel } from "#/components/page/Carousel.tsx";
-import { MissionsRow } from "#/components/page/MissionAccordion.tsx";
+import { MissionsRow, toColumns } from "#/components/page/MissionAccordion.tsx";
+import type { MissionColumn } from "#/components/page/MissionAccordion.tsx";
 
 export const Route = createFileRoute("/atelier")({
   loader: async ({ context }) => {
@@ -46,11 +48,18 @@ const diplomesGroupe = "Diplômes et formations";
 
 const isDiplomes = (bloc: AtelierBloc): bloc is DiplomesBloc => bloc.acf_fc_layout === "diplomes";
 
-function missionsOf(bloc: AtelierBloc) {
-  if (bloc.acf_fc_layout !== "missions") return [];
-  return asList(bloc.elements)
+const cleanMissions = (list: AcfList<{ libelle: string; definition?: string }> | undefined) =>
+  asList(list)
     .map((m) => ({ libelle: m.libelle?.trim() ?? "", definition: m.definition?.trim() ?? "" }))
     .filter((m) => m.libelle);
+
+function colonnesOf(bloc: AtelierBloc): MissionColumn[] {
+  if (bloc.acf_fc_layout !== "missions") return [];
+  const colonnes = asList(bloc.colonnes)
+    .map((c) => ({ titre: c.titre?.trim() ?? "", missions: cleanMissions(c.missions) }))
+    .filter((c) => c.missions.length);
+  if (asList(bloc.colonnes).length) return colonnes;
+  return toColumns(cleanMissions(bloc.elements)).map((missions) => ({ titre: "", missions }));
 }
 
 function formulesOf(bloc: AtelierBloc) {
@@ -154,9 +163,16 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
     }
 
     case "missions": {
-      const missions = missionsOf(bloc);
-      if (!missions.length) return null;
-      return <MissionsRow label={bloc.titre} items={missions} formules={formulesOf(bloc)} />;
+      const colonnes = colonnesOf(bloc);
+      if (!colonnes.length) return null;
+      return (
+        <MissionsRow
+          label={bloc.titre}
+          colonnes={colonnes}
+          formules={formulesOf(bloc)}
+          lienFormules={bloc.lien_formules?.trim() || undefined}
+        />
+      );
     }
 
     case "encadre":
@@ -168,9 +184,9 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
             {bloc.texte}
           </p>
           {bloc.email && (
-            <TextLink href={`mailto:${bloc.email}`} className="mt-2 md:mt-0 whitespace-nowrap">
-              {bloc.texte_bouton || "Demander le portfolio"}
-            </TextLink>
+            <a href={`mailto:${bloc.email}`} className={cn(filledButtonClass, "mt-4 md:mt-0 whitespace-nowrap shrink-0")}>
+              {bloc.texte_bouton || "Demander le portfolio"} →
+            </a>
           )}
         </div>
       );

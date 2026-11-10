@@ -4,6 +4,7 @@ import type { ContactInput, ContactStatus } from "#/lib/contact.ts";
 import { sendContactMessage } from "#/server/contact.ts";
 import { track } from "#/lib/analytics.ts";
 import type { ContactLabels } from "#/config/labels.ts";
+import { filledButtonClass } from "#/components/page/buttonStyles.ts";
 
 type Field = "nom" | "email" | "profil" | "message";
 type Errors = Partial<Record<Field, string>>;
@@ -153,7 +154,7 @@ export function ContactForm({
         <button
           type="submit"
           disabled={status === "sending"}
-          className="min-h-12 px-7 border-0 rounded bg-kaki text-neutral-50 font-mono text-xs tracking-[0.9px] uppercase cursor-pointer hover:bg-kaki-dark disabled:opacity-60 disabled:cursor-wait transition-colors"
+          className={`${filledButtonClass} disabled:opacity-60 disabled:cursor-wait`}
         >
           {status === "sending" ? "Envoi en cours…" : `${labels.bouton} →`}
         </button>
