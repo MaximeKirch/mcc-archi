@@ -66,6 +66,16 @@ describe("MissionsRow", () => {
     expect(screen.getByText("Relevé").closest("li")?.querySelector("svg")).toBeNull();
   });
 
+  it("shows the accroche above the columns, only when given", () => {
+    const { rerender } = render(<MissionsRow label="" colonnes={colonnes} />);
+    expect(screen.queryByRole("heading", { level: 4 })).toBeNull();
+
+    rerender(<MissionsRow label="" accroche="Un accompagnement sur mesure" colonnes={colonnes} />);
+    const heading = screen.getByRole("heading", { level: 4 });
+    expect(heading.textContent).toBe("Un accompagnement sur mesure");
+    expect(heading.nextElementSibling?.querySelector("ul")).not.toBeNull();
+  });
+
   it("renders the columns as given, in order", () => {
     const { container } = render(<MissionsRow label="" colonnes={colonnes} />);
     const libelles = (ul: Element) => [...ul.querySelectorAll(".mission-mot")].map((m) => m.textContent);

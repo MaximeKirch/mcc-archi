@@ -10,6 +10,9 @@ export const rowBase = "py-7 md:py-10 border-t border-line-kaki first:border-t-0
 // Space under a block title, same as above it (row padding).
 export const titleGap = "mb-7 md:mb-10";
 
+export const accrocheClass =
+  "text-base leading-6 tracking-[-0.3px] md:text-xl md:leading-7 md:tracking-[-0.5px] font-semibold uppercase text-kaki";
+
 interface SectionProps {
   id: string;
   num: string;

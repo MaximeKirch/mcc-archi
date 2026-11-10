@@ -99,6 +99,7 @@ export type AtelierBloc = { titre: string } & (
     }
   | {
       acf_fc_layout: "missions";
+      accroche?: string;
       colonnes?: AcfList<{ titre: string; missions: AcfList<{ libelle: string; definition: string }> }>;
       // puces: one bullet per line.
       formules?: AcfList<{ titre: string; texte: string; puces: string }>;
