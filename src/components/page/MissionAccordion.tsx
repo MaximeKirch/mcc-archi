@@ -1,10 +1,17 @@
 import { useId, useState } from "react";
 import { cn } from "#/lib/utils.ts";
 import { capTop, rowBase, rowLabel } from "./Section.tsx";
+import { Link } from "@tanstack/react-router";
+import { filledButtonClass } from "./buttonStyles.ts";
 
 export interface Mission {
   libelle: string;
   definition: string;
+}
+
+export interface MissionColumn {
+  titre: string;
+  missions: Mission[];
 }
 
 export interface Formule {
@@ -16,8 +23,8 @@ export interface Formule {
 const COLUMNS = 3;
 const MIN_ROWS = 3;
 
-// Desktop: filled column by column, 3 columns max, at least 3 missions each (12 -> 4/4/4, 6 -> 3/3).
-function toColumns<T>(items: T[]): T[][] {
+// Old flat list: filled column by column, 3 columns max, at least 3 missions each (12 -> 4/4/4, 6 -> 3/3).
+export function toColumns<T>(items: T[]): T[][] {
   const size = Math.max(MIN_ROWS, Math.ceil(items.length / COLUMNS));
   return Array.from({ length: COLUMNS }, (_, c) => items.slice(c * size, (c + 1) * size)).filter(
     (column) => column.length,
@@ -53,6 +60,8 @@ function Label({ text, chevron }: { text: string; chevron: boolean }) {
   );
 }
 
+const columnHeader = "mb-1 md:mb-0 font-mono text-[13px] leading-5 tracking-[1.4px] uppercase text-kaki";
+
 const word = "py-[9px] md:py-0 md:pb-3 font-bold text-[15px] leading-6 md:text-base md:leading-[26px]";
 
 function FormuleCards({ formules, className }: { formules: Formule[]; className?: string }) {
@@ -64,9 +73,9 @@ function FormuleCards({ formules, className }: { formules: Formule[]; className?
           className="flex flex-col gap-3 rounded-[4px] border border-line-kaki px-5 pt-5 pb-6 lg:px-6 lg:pt-6 lg:pb-7 text-kaki"
         >
           {f.titre && <h4 className="text-lg leading-[26px] font-bold">{f.titre}</h4>}
-          {f.texte && <p className="text-left text-sm leading-[22px] whitespace-pre-line">{f.texte}</p>}
+          {f.texte && <p className="texte-justifie text-sm leading-[22px] whitespace-pre-line">{f.texte}</p>}
           {f.puces.length > 0 && (
-            <ul className="list-disc pl-[18px] text-sm leading-6">
+            <ul className="texte-justifie list-disc pl-[18px] text-sm leading-6">
               {f.puces.map((puce, j) => (
                 <li key={j} className="mb-1">
                   {puce}
@@ -82,18 +91,33 @@ function FormuleCards({ formules, className }: { formules: Formule[]; className?
 
 interface MissionsRowProps {
   label: string;
-  items: Mission[];
+  colonnes: MissionColumn[];
   formules?: Formule[];
+  lienFormules?: string;
 }
 
 // Desktop (lg): grid stays still, the open definition shows in the label column.
 // Below lg: classic accordion, definition under its mission.
-export function MissionsRow({ label, items, formules = [] }: MissionsRowProps) {
+export function MissionsRow({
+  label,
+  colonnes,
+  formules = [],
+  lienFormules = "Discuter de votre projet",
+}: MissionsRowProps) {
   const baseId = useId();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const indexed = items.map((item, index) => ({ ...item, index }));
-  const opened = openIndex === null ? null : items[openIndex];
+  const all = colonnes.flatMap((colonne) => colonne.missions);
+  let next = 0;
+  const indexed = colonnes.map((colonne) => ({
+    titre: colonne.titre,
+    missions: colonne.missions.map((mission) => ({
+      ...mission,
+      index: next++,
+    })),
+  }));
+  const opened = openIndex === null ? null : all[openIndex];
   const hasFormules = formules.length > 0;
+  const hasHeaders = colonnes.some((colonne) => colonne.titre);
   const buttonId = (i: number) => `${baseId}-mission-${i}`;
   const asideId = `${baseId}-definition`;
 
@@ -128,52 +152,73 @@ export function MissionsRow({ label, items, formules = [] }: MissionsRowProps) {
         {!hasFormules && aside}
       </div>
 
-      <div className="md:col-start-2 md:row-start-1 md:grid md:grid-cols-3 md:gap-x-4 md:items-start">
-        {toColumns(indexed).map((column, c) => (
-          <ul key={c}>
-            {column.map(({ libelle, definition, index }, i) => {
-              const first = i === 0 && capTop;
-              if (!definition) {
+      <div
+        className={cn(
+          "md:col-start-2 md:row-start-1 md:grid md:grid-cols-3 md:gap-x-4 md:items-start",
+          hasHeaders && "md:gap-y-4",
+        )}
+      >
+        {indexed.map(({ titre, missions }, c) => (
+          // Subgrid: headers share a row, so missions start level even if a title wraps.
+          <div
+            key={c}
+            className={cn(hasHeaders && "mt-6 first:mt-0 md:mt-0 md:grid md:grid-rows-subgrid md:row-span-2")}
+          >
+            {titre ? (
+              <h4 className={cn(columnHeader, capTop)}>{titre}</h4>
+            ) : (
+              hasHeaders && <div aria-hidden="true" className="hidden md:block" />
+            )}
+            <ul>
+              {missions.map(({ libelle, definition, index }, i) => {
+                const first = !hasHeaders && i === 0 && capTop;
+                if (!definition) {
+                  return (
+                    <li key={index} className={cn(word, first, "text-neutral-700")}>
+                      <Label text={libelle} chevron={false} />
+                    </li>
+                  );
+                }
+                const open = openIndex === index;
+                const panelId = `${baseId}-panel-${index}`;
                 return (
-                  <li key={index} className={cn(word, first, "text-neutral-700")}>
-                    <Label text={libelle} chevron={false} />
+                  <li key={index}>
+                    <button
+                      type="button"
+                      id={buttonId(index)}
+                      aria-expanded={open}
+                      aria-controls={`${panelId} ${asideId}`}
+                      onClick={() => setOpenIndex(open ? null : index)}
+                      className={cn("mission block w-full text-left cursor-pointer", word, first)}
+                    >
+                      <Label text={libelle} chevron />
+                    </button>
+                    <div
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={buttonId(index)}
+                      hidden={!open}
+                      className="lg:hidden texte-justifie pb-3 md:pr-6 text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-500 whitespace-pre-line"
+                    >
+                      {definition}
+                    </div>
                   </li>
                 );
-              }
-              const open = openIndex === index;
-              const panelId = `${baseId}-panel-${index}`;
-              return (
-                <li key={index}>
-                  <button
-                    type="button"
-                    id={buttonId(index)}
-                    aria-expanded={open}
-                    aria-controls={`${panelId} ${asideId}`}
-                    onClick={() => setOpenIndex(open ? null : index)}
-                    className={cn("mission block w-full text-left cursor-pointer", word, first)}
-                  >
-                    <Label text={libelle} chevron />
-                  </button>
-                  <div
-                    id={panelId}
-                    role="region"
-                    aria-labelledby={buttonId(index)}
-                    hidden={!open}
-                    className="lg:hidden texte-justifie pb-3 md:pr-6 text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-500 whitespace-pre-line"
-                  >
-                    {definition}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+              })}
+            </ul>
+          </div>
         ))}
       </div>
 
       {hasFormules && (
         <>
           {aside}
-          <FormuleCards formules={formules} className="mt-4 md:mt-0 md:col-start-2 md:row-start-2" />
+          <div className="mt-4 md:mt-0 md:col-start-2 md:row-start-2">
+            <FormuleCards formules={formules} />
+            <Link to="/contact" className={cn(filledButtonClass, "mt-4 md:mt-6")}>
+              {lienFormules} →
+            </Link>
+          </div>
         </>
       )}
     </div>
