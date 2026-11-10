@@ -32,7 +32,8 @@ export function HeroHeader({ name, architect, intro = DEFAULT_INTRO, labels }: H
           <p className="js-header-title mb-4 mt-6 text-kaki text-xs tracking-[0.065em] uppercase font-mono ">
             {architect} | {labels.titre_architecte}
           </p>
-          <p className="js-header-fade hidden lg:block mt-auto w-[436px] text-sm leading-[25px] font-light text-neutral-700 texte-justifie">
+          {/* Last line justified too: flush block on both sides. */}
+          <p className="js-header-fade hidden lg:block mt-auto w-[436px] text-sm leading-[25px] font-light text-neutral-700 texte-justifie [text-align-last:justify]">
             {intro}
           </p>
         </div>

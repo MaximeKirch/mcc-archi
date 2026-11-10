@@ -5,6 +5,8 @@ export const capTop = "md:[text-box:trim-start_cap_alphabetic]";
 
 export const rowLabel = "font-mono text-[13px] leading-5 tracking-[1.4px] uppercase text-neutral-500";
 
+export const rowBase = "py-7 md:py-10 border-t border-line-kaki first:border-t-0";
+
 // Space under a block title, same as above it (row padding).
 export const titleGap = "mb-7 md:mb-10";
 
@@ -32,16 +34,14 @@ export function Section({ id, num, title, children }: SectionProps) {
 interface SectionRowProps {
   label: string;
   children: React.ReactNode;
-  // Content uses the whole column, no 760px cap.
-  wide?: boolean;
   labelClassName?: string;
 }
 
-export function SectionRow({ label, children, wide, labelClassName }: SectionRowProps) {
+export function SectionRow({ label, children, labelClassName }: SectionRowProps) {
   return (
     <div
       // Label and content first line share the same cap top.
-      className="py-7 md:py-10 border-t border-line-kaki first:border-t-0 md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start"
+      className={cn(rowBase, "md:grid md:grid-cols-[240px_minmax(0,1fr)] md:gap-x-12 md:items-start")}
     >
       {label && (
         <h3 className={cn(rowLabel, "mb-3.5 md:mb-0", capTop, labelClassName)}>
@@ -49,7 +49,7 @@ export function SectionRow({ label, children, wide, labelClassName }: SectionRow
         </h3>
       )}
       {children && (
-        <div className={cn("md:col-start-2", capTop, !wide && "max-w-[760px]")}>{children}</div>
+        <div className={cn("md:col-start-2 max-w-[760px]", capTop)}>{children}</div>
       )}
     </div>
   );
