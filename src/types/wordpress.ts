@@ -88,7 +88,7 @@ export type AtelierBloc = { titre: string } & (
       // Only on presentation_carrousel (on presentation before the migration).
       carrousel?: AcfList<CarouselSlide>;
     }
-  | { acf_fc_layout: "texte"; texte: string; texte_lien: string; cible_lien: string }
+  | { acf_fc_layout: "texte"; accroche?: string; texte: string; texte_lien: string; cible_lien: string }
   | { acf_fc_layout: "liste"; intro: string; elements: AcfList<{ titre: string; texte: string }> }
   | { acf_fc_layout: "texte_riche"; contenu: string }
   | {

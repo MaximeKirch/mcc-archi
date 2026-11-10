@@ -116,9 +116,11 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
 
     case "texte": {
       const hasLink = bloc.texte_lien && bloc.cible_lien;
-      if (!bloc.texte && !hasLink) return null;
+      const accroche = bloc.accroche?.trim();
+      if (!accroche && !bloc.texte && !hasLink) return null;
       return (
         <>
+          {accroche && <h4 className={`${titleGap} ${accrocheClass}`}>{accroche}</h4>}
           {bloc.texte && <RichText html={bloc.texte} className={bodyText} />}
           {hasLink && (
             <TextLink href={bloc.cible_lien} className="mt-2 md:mt-4">
