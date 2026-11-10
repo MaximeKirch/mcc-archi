@@ -1,7 +1,15 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { MissionsRow } from "./MissionAccordion.tsx";
+import { MissionsRow, toColumns } from "./MissionAccordion.tsx";
+
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({ to, children, className }: { to: string; children: React.ReactNode; className?: string }) => (
+    <a href={to} className={className}>
+      {children}
+    </a>
+  ),
+}));
 
 afterEach(cleanup);
 
@@ -12,6 +20,12 @@ const items = [
   { libelle: "Esquisse", definition: "Premières hypothèses." },
 ];
 
+// Two columns, no titles: Conseil + Diagnostic, Relevé + Esquisse.
+const colonnes = [
+  { titre: "", missions: items.slice(0, 2) },
+  { titre: "", missions: items.slice(2) },
+];
+
 const formule = (titre: string) => ({ titre, texte: "Pour qui.", puces: ["Visite", "Relevé"] });
 
 // The missions grid only (formules also use ul).
@@ -20,7 +34,7 @@ const missionColumns = (container: HTMLElement) =>
 
 describe("MissionsRow", () => {
   it("starts closed and opens one mission at a time", () => {
-    render(<MissionsRow label="Missions" items={items} />);
+    render(<MissionsRow label="Missions" colonnes={colonnes} />);
     const conseil = screen.getByRole("button", { name: "Conseil" });
     const diagnostic = screen.getByRole("button", { name: "Diagnostic" });
     expect(screen.queryAllByRole("region")).toHaveLength(0);
@@ -47,48 +61,75 @@ describe("MissionsRow", () => {
   });
 
   it("shows a mission without definition as plain text", () => {
-    render(<MissionsRow label="Missions" items={items} />);
+    render(<MissionsRow label="Missions" colonnes={colonnes} />);
     expect(screen.queryByRole("button", { name: "Relevé" })).toBeNull();
     expect(screen.getByText("Relevé").closest("li")?.querySelector("svg")).toBeNull();
   });
 
-  it("fills three columns in order, 5 / 5 / 4 for 14 missions", () => {
-    const many = Array.from({ length: 14 }, (_, i) => ({ libelle: `M${i}`, definition: "d" }));
-    const { container } = render(<MissionsRow label="" items={many} />);
-    const columns = missionColumns(container);
-    expect(columns.map((ul) => ul.children.length)).toEqual([5, 5, 4]);
-    expect(columns[1].textContent).toMatch(/^M5/);
+  it("splits the old flat list: 5 / 5 / 4 for 14, at least 3 per column", () => {
+    const sizes = (n: number) => toColumns(Array.from({ length: n }, (_, i) => i)).map((c) => c.length);
+    expect(sizes(14)).toEqual([5, 5, 4]);
+    expect(sizes(6)).toEqual([3, 3]);
+    expect(sizes(12)).toEqual([4, 4, 4]);
+    expect(sizes(7)).toEqual([3, 3, 1]);
   });
 
-  it("keeps at least 3 missions per column: 6 -> 3 / 3, 12 -> 4 / 4 / 4", () => {
-    const counts = (n: number) => {
-      const many = Array.from({ length: n }, (_, i) => ({ libelle: `M${i}`, definition: "" }));
-      const { container, unmount } = render(<MissionsRow label="" items={many} />);
-      const result = missionColumns(container).map((ul) => ul.children.length);
-      unmount();
-      return result;
-    };
-    expect(counts(6)).toEqual([3, 3]);
-    expect(counts(12)).toEqual([4, 4, 4]);
-    expect(counts(7)).toEqual([3, 3, 1]);
+  it("renders the columns as given, in order", () => {
+    const { container } = render(<MissionsRow label="" colonnes={colonnes} />);
+    const libelles = (ul: Element) => [...ul.querySelectorAll(".mission-mot")].map((m) => m.textContent);
+    expect(missionColumns(container).map(libelles)).toEqual([
+      ["Conseil", "Diagnostic"],
+      ["Relevé", "Esquisse"],
+    ]);
+  });
+
+  it("shows column headers only when titled, keeping an empty slot to align missions", () => {
+    const { container, rerender } = render(<MissionsRow label="" colonnes={colonnes} />);
+    expect(screen.queryAllByRole("heading", { level: 4 })).toHaveLength(0);
+
+    rerender(<MissionsRow label="" colonnes={[{ ...colonnes[0], titre: "Phases préliminaires" }, colonnes[1]]} />);
+    expect(screen.getByRole("heading", { level: 4 }).textContent).toBe("Phases préliminaires");
+    expect(container.querySelectorAll('[aria-hidden="true"].md\\:block')).toHaveLength(1);
   });
 
   it("keeps the last word with the chevron", () => {
-    render(<MissionsRow label="" items={[{ libelle: "Permis de construire (PC)", definition: "d" }]} />);
+    render(
+      <MissionsRow
+        label=""
+        colonnes={[{ titre: "", missions: [{ libelle: "Permis de construire (PC)", definition: "d" }] }]}
+      />,
+    );
     const nowrap = screen.getByRole("button").querySelector(".whitespace-nowrap")!;
     expect(nowrap.textContent).toBe("(PC)");
     expect(nowrap.querySelector("svg")).not.toBeNull();
   });
 
   it("renders one card per formule, nothing without formules", () => {
-    const { container, rerender } = render(<MissionsRow label="" items={items} />);
+    const { container, rerender } = render(<MissionsRow label="" colonnes={colonnes} />);
     expect(container.querySelectorAll("h4")).toHaveLength(0);
 
-    rerender(<MissionsRow label="" items={items} formules={[formule("Essentielle"), formule("Complète")]} />);
-    expect(screen.getAllByRole("heading", { level: 4 }).map((h) => h.textContent)).toEqual([
-      "Essentielle",
-      "Complète",
-    ]);
+    rerender(<MissionsRow label="" colonnes={colonnes} formules={[formule("Essentielle"), formule("Complète")]} />);
+    expect(screen.getAllByRole("heading", { level: 4 }).map((h) => h.textContent)).toEqual(["Essentielle", "Complète"]);
     expect(screen.getAllByText("Visite")).toHaveLength(2);
+  });
+
+  it("links to contact under the formules only", () => {
+    const { rerender } = render(<MissionsRow label="" colonnes={colonnes} />);
+    expect(screen.queryByRole("link")).toBeNull();
+
+    rerender(<MissionsRow label="" colonnes={colonnes} formules={[formule("Essentielle")]} />);
+    const link = screen.getByRole("link");
+    expect(link.textContent).toBe("Discuter de votre projet →");
+    expect(link.getAttribute("href")).toBe("/contact");
+
+    rerender(
+      <MissionsRow
+        label=""
+        colonnes={colonnes}
+        formules={[formule("Essentielle")]}
+        lienFormules="Prendre rendez-vous"
+      />,
+    );
+    expect(screen.getByRole("link").textContent).toBe("Prendre rendez-vous →");
   });
 });
