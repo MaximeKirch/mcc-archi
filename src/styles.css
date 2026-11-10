@@ -102,19 +102,21 @@ body {
   }
   /* Open: white on solid kaki, contrast 6.9:1. */
   .mission[aria-expanded="true"] {
-    --accent: #fff;
+    --accent: #fafafa;
     color: var(--accent);
   }
   .mission-mot {
-    padding: 0.15em 0.4em;
-    margin: 0 -0.4em;
-    border-radius: var(--radius-sm);
+    padding: 2px 6px;
+    margin-left: -6px;
+    border-radius: 4px;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
     transition: background-color 150ms;
   }
-  .mission[aria-expanded="true"] .mission-mot {
+  .mission[aria-expanded="true"] .mission-mot,
+  .mission-pastille {
     background-color: var(--color-kaki);
+    color: #fafafa;
   }
   .mission:focus-visible {
     outline: 2px solid var(--color-kaki);
@@ -123,7 +125,7 @@ body {
   .mission-ch {
     display: inline-block;
     vertical-align: -2px;
-    margin-left: 8px;
+    margin-left: 6px;
     color: var(--accent);
     transition: transform 150ms;
   }

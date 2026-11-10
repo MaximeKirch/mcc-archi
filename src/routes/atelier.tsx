@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { siteConfig } from "#/config/site.ts";
 import { seoHead } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
@@ -20,7 +20,7 @@ import {
 } from "#/components/page/Section.tsx";
 import { TextLink } from "#/components/page/TextLink.tsx";
 import { Carousel } from "#/components/page/Carousel.tsx";
-import { MissionAccordion } from "#/components/page/MissionAccordion.tsx";
+import { MissionsRow } from "#/components/page/MissionAccordion.tsx";
 
 export const Route = createFileRoute("/atelier")({
   loader: async ({ context }) => {
@@ -51,6 +51,20 @@ function missionsOf(bloc: AtelierBloc) {
   return asList(bloc.elements)
     .map((m) => ({ libelle: m.libelle?.trim() ?? "", definition: m.definition?.trim() ?? "" }))
     .filter((m) => m.libelle);
+}
+
+function formulesOf(bloc: AtelierBloc) {
+  if (bloc.acf_fc_layout !== "missions") return [];
+  return asList(bloc.formules)
+    .map((f) => ({
+      titre: f.titre?.trim() ?? "",
+      texte: f.texte?.trim() ?? "",
+      puces: (f.puces ?? "")
+        .split("\n")
+        .map((p) => p.replace(/^\s*[-•*]\s*/, "").trim())
+        .filter(Boolean),
+    }))
+    .filter((f) => f.titre || f.texte || f.puces.length);
 }
 
 // Null when the block has nothing to show.
@@ -142,7 +156,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
     case "missions": {
       const missions = missionsOf(bloc);
       if (!missions.length) return null;
-      return <MissionAccordion items={missions} />;
+      return <MissionsRow label={bloc.titre} items={missions} formules={formulesOf(bloc)} />;
     }
 
     case "encadre":
@@ -209,8 +223,9 @@ function DiplomaColumns({ blocs }: { blocs: DiplomesBloc[] }) {
 interface Row {
   label: string;
   content: React.ReactNode;
-  wide?: boolean;
   labelClassName?: string;
+  // Content draws its own row (missions).
+  custom?: boolean;
 }
 
 // Two diploma blocks in a row share one row.
@@ -233,7 +248,7 @@ function rowsOf(blocs: AtelierBloc[]): Row[] {
     rows.push({
       label: bloc.titre,
       content: blocContent(bloc),
-      wide: bloc.acf_fc_layout === "missions",
+      custom: bloc.acf_fc_layout === "missions",
     });
   }
   return rows.filter((row) => row.content);
@@ -280,11 +295,15 @@ function AtelierComponent() {
           num={String(i + 1).padStart(2, "0")}
           title={section.title}
         >
-          {section.rows.map((row, j) => (
-            <SectionRow key={j} label={row.label} wide={row.wide} labelClassName={row.labelClassName}>
-              {row.content}
-            </SectionRow>
-          ))}
+          {section.rows.map((row, j) =>
+            row.custom ? (
+              <Fragment key={j}>{row.content}</Fragment>
+            ) : (
+              <SectionRow key={j} label={row.label} labelClassName={row.labelClassName}>
+                {row.content}
+              </SectionRow>
+            ),
+          )}
         </Section>
       ))}
     </PageShell>

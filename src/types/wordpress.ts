@@ -101,6 +101,8 @@ export type AtelierBloc = { titre: string } & (
       acf_fc_layout: "missions";
       // definition missing until the backend field ships.
       elements: AcfList<{ libelle: string; definition?: string }>;
+      // puces: one bullet per line.
+      formules?: AcfList<{ titre: string; texte: string; puces: string }>;
     }
   | { acf_fc_layout: "encadre"; texte: string; texte_bouton: string; email: string }
 );
