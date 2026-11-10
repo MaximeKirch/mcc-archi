@@ -20,17 +20,6 @@ export interface Formule {
   puces: string[];
 }
 
-const COLUMNS = 3;
-const MIN_ROWS = 3;
-
-// Old flat list: filled column by column, 3 columns max, at least 3 missions each (12 -> 4/4/4, 6 -> 3/3).
-export function toColumns<T>(items: T[]): T[][] {
-  const size = Math.max(MIN_ROWS, Math.ceil(items.length / COLUMNS));
-  return Array.from({ length: COLUMNS }, (_, c) => items.slice(c * size, (c + 1) * size)).filter(
-    (column) => column.length,
-  );
-}
-
 // Last word and chevron never wrap apart.
 function Label({ text, chevron }: { text: string; chevron: boolean }) {
   const cut = text.lastIndexOf(" ") + 1;
