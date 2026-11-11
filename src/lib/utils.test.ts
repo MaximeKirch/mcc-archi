@@ -35,6 +35,10 @@ describe('lignesDe', () => {
     ).toEqual(['Étapes', 'Visite <span class="taille-grand">sur site</span>'])
   })
 
+  it('splits a pasted list whose tags WordPress removed', () => {
+    expect(lignesDe('<p>Intro</p>\n\nVisite\nRelevé\n\n')).toEqual(['Intro', 'Visite', 'Relevé'])
+  })
+
   it('splits list items', () => {
     expect(lignesDe('<ul><li>Visite</li><li>Relevé</li></ul>')).toEqual(['Visite', 'Relevé'])
   })

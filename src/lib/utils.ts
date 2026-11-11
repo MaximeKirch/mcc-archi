@@ -70,11 +70,11 @@ export const estHtml = (valeur: string) => balise.test(valeur);
 export const texteSeul = (valeur: string) => valeur.replace(/<[^>]*>|&nbsp;/g, " ").trim();
 
 // One bullet per line: a line break, a paragraph, a subtitle or a list item (WYSIWYG), or a newline (old textarea).
-// Their alignment is dropped, bullets stay justified.
+// Their alignment is dropped, bullets stay justified. Newlines too: a pasted list loses its tags.
 export function lignesDe(valeur: string): string[] {
   const html = estHtml(valeur);
   return valeur
-    .split(html ? /<br\s*\/?>|<\/?(?:p|h4|ul|ol|li)(?:\s[^>]*)?>/i : "\n")
+    .split(html ? /<br\s*\/?>|<\/?(?:p|h4|ul|ol|li)(?:\s[^>]*)?>|\n/i : "\n")
     .map((ligne) => ligne.replace(/^\s*[-•*]\s*/, "").trim())
     .filter((ligne) => (html ? texteSeul(ligne) : ligne));
 }
