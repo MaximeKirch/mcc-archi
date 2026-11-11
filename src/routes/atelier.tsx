@@ -6,7 +6,7 @@ import { seoHead } from "#/lib/seo.ts";
 import { normalizeImage } from "#/lib/wp.ts";
 import { atelierPageQueryOptions } from "#/queries/atelier.ts";
 import { asList } from "#/queries/pages.ts";
-import { cn, sectionIds, splitLeadingYear } from "#/lib/utils.ts";
+import { cn, lignesDe, sectionIds, splitLeadingYear, texteSeul } from "#/lib/utils.ts";
 import type { AtelierBloc } from "#/types/wordpress.ts";
 import { PageShell } from "#/components/page/PageShell.tsx";
 import { PageHero, usePageHeroAnimation } from "#/components/page/PageHero.tsx";
@@ -55,7 +55,10 @@ function colonnesOf(bloc: AtelierBloc): MissionColumn[] {
     .map((c) => ({
       titre: c.titre?.trim() ?? "",
       missions: asList(c.missions)
-        .map((m) => ({ libelle: m.libelle?.trim() ?? "", definition: m.definition?.trim() ?? "" }))
+        .map((m) => ({
+          libelle: m.libelle?.trim() ?? "",
+          definition: texteSeul(m.definition ?? "") ? m.definition.trim() : "",
+        }))
         .filter((m) => m.libelle),
     }))
     .filter((c) => c.missions.length);
@@ -66,11 +69,8 @@ function formulesOf(bloc: AtelierBloc) {
   return asList(bloc.formules)
     .map((f) => ({
       titre: f.titre?.trim() ?? "",
-      texte: f.texte?.trim() ?? "",
-      puces: (f.puces ?? "")
-        .split("\n")
-        .map((p) => p.replace(/^\s*[-•*]\s*/, "").trim())
-        .filter(Boolean),
+      texte: texteSeul(f.texte ?? "") ? f.texte.trim() : "",
+      puces: lignesDe(f.puces ?? ""),
     }))
     .filter((f) => f.titre || f.texte || f.puces.length);
 }
