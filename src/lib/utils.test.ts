@@ -29,6 +29,12 @@ describe('lignesDe', () => {
     ])
   })
 
+  it('splits aligned paragraphs and subtitles, keeping size spans', () => {
+    expect(
+      lignesDe('<h4>Étapes</h4>\n<p style="text-align: center;">Visite <span class="taille-grand">sur site</span></p>'),
+    ).toEqual(['Étapes', 'Visite <span class="taille-grand">sur site</span>'])
+  })
+
   it('splits list items', () => {
     expect(lignesDe('<ul><li>Visite</li><li>Relevé</li></ul>')).toEqual(['Visite', 'Relevé'])
   })

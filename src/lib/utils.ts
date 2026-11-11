@@ -69,11 +69,12 @@ export const estHtml = (valeur: string) => balise.test(valeur);
 // Text a reader would see: no tags, no &nbsp;.
 export const texteSeul = (valeur: string) => valeur.replace(/<[^>]*>|&nbsp;/g, " ").trim();
 
-// One bullet per line: a line break, a paragraph or a list item (minimal WYSIWYG), or a newline (old textarea).
+// One bullet per line: a line break, a paragraph, a subtitle or a list item (WYSIWYG), or a newline (old textarea).
+// Their alignment is dropped, bullets stay justified.
 export function lignesDe(valeur: string): string[] {
   const html = estHtml(valeur);
   return valeur
-    .split(html ? /<br\s*\/?>|<\/?(?:p|ul|ol|li)>/i : "\n")
+    .split(html ? /<br\s*\/?>|<\/?(?:p|h4|ul|ol|li)(?:\s[^>]*)?>/i : "\n")
     .map((ligne) => ligne.replace(/^\s*[-•*]\s*/, "").trim())
     .filter((ligne) => (html ? texteSeul(ligne) : ligne));
 }
