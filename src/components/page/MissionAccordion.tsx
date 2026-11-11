@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { cn, estHtml } from "#/lib/utils.ts";
+import { cn, texteMinimalHtml } from "#/lib/utils.ts";
 import { accrocheClass, capTop, rowBase, rowLabel, titleGap } from "./Section.tsx";
 import { Link } from "@tanstack/react-router";
 import { filledButtonClass } from "./buttonStyles.ts";
@@ -20,12 +20,9 @@ export interface Formule {
   puces: string[];
 }
 
-// Minimal WYSIWYG html (cleaned by WordPress), or plain text with its line breaks.
+// Html cleaned by WordPress (plain text is escaped).
 function TexteMinimal({ valeur, className }: { valeur: string; className?: string }) {
-  if (estHtml(valeur)) {
-    return <div className={cn("texte-minimal", className)} dangerouslySetInnerHTML={{ __html: valeur }} />;
-  }
-  return <div className={cn("texte-minimal whitespace-pre-line", className)}>{valeur}</div>;
+  return <div className={cn("texte-minimal", className)} dangerouslySetInnerHTML={{ __html: texteMinimalHtml(valeur) }} />;
 }
 
 // Last word and chevron never wrap apart.

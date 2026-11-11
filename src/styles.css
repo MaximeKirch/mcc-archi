@@ -101,6 +101,15 @@ body {
   .texte-minimal > * + * {
     margin-top: 1lh;
   }
+  /* Line typed with a bullet: wrapped lines align with its text. */
+  .texte-minimal .ligne-puce {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  /* Bullet and its space, as typed: same offset as before. */
+  .texte-minimal .ligne-puce-marque {
+    white-space: pre;
+  }
   /* Lists typed or pasted in the editor. */
   .texte-minimal ul {
     list-style: disc;
