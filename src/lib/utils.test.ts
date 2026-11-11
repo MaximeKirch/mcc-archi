@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { lignesDe, splitLeadingYear, texteSeul } from './utils'
+import { lignesDe, splitLeadingYear, texteMinimalHtml, texteSeul } from './utils'
 
 describe('splitLeadingYear', () => {
   it('splits a single year', () => {
@@ -48,5 +48,30 @@ describe('texteSeul', () => {
   it('sees an empty paragraph as empty', () => {
     expect(texteSeul('<p>&nbsp;</p>')).toBe('')
     expect(texteSeul('<p><strong>Analyse</strong></p>')).toBe('Analyse')
+  })
+})
+
+describe('texteMinimalHtml', () => {
+  const puce = (marque: string, texte: string) =>
+    `<span class="ligne-puce"><span class="ligne-puce-marque">${marque} </span><span>${texte}</span></span>`
+
+  it('gives bullet lines their own block, without the line breaks around them', () => {
+    expect(texteMinimalHtml('<p>Intro<br />\nSuite</p>\n<p>• Plans<br />\n&#8211; <strong>Coupes</strong><br />\nFin</p>')).toBe(
+      `<p>Intro<br />\nSuite</p>\n<p>${puce('•', 'Plans')}${puce('&#8211;', '<strong>Coupes</strong>')}Fin</p>`,
+    )
+  })
+
+  it('makes old plain text html, escaped', () => {
+    expect(texteMinimalHtml('a < b\nc\n\n• d')).toBe(`<p>a &lt; b<br />c</p><p>${puce('•', 'd')}</p>`)
+  })
+
+  it('drops empty spans left by a paste, keeps size spans', () => {
+    expect(texteMinimalHtml('<p>• a<span><br />\n</span>• <span class="taille-grand">b</span></p>')).toBe(
+      `<p>${puce('•', 'a')}${puce('•', '<span class="taille-grand">b</span>')}</p>`,
+    )
+  })
+
+  it('leaves dashes inside a line alone', () => {
+    expect(texteMinimalHtml('<p>Programme – Budget</p>')).toBe('<p>Programme – Budget</p>')
   })
 })

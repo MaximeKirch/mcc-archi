@@ -97,9 +97,27 @@ body {
 
 /* Missions accordion (atelier). */
 @layer components {
-  /* A blank line between paragraphs, like the old textarea. */
+  /* Old textarea: a blank line between paragraphs. The editor's Enter is a <br>. */
   .texte-minimal > * + * {
     margin-top: 1lh;
+  }
+  /* Line typed with a bullet: wrapped lines align with its text. */
+  .texte-minimal .ligne-puce {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  /* Bullet and its space, as typed: same offset as before. */
+  .texte-minimal .ligne-puce-marque {
+    white-space: pre;
+  }
+  /* Lists typed or pasted in the editor. */
+  .texte-minimal ul {
+    list-style: disc;
+    padding-left: 18px;
+  }
+  .texte-minimal ol {
+    list-style: decimal;
+    padding-left: 18px;
   }
   /* Italic text: the italic button sets a passage back to roman. */
   .italique-inverse :is(em, i) {
