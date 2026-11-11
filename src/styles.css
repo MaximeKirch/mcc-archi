@@ -97,10 +97,6 @@ body {
 
 /* Missions accordion (atelier). */
 @layer components {
-  /* A blank line between paragraphs, like the old textarea. */
-  .texte-minimal > * + * {
-    margin-top: 1lh;
-  }
   /* Italic text: the italic button sets a passage back to roman. */
   .italique-inverse :is(em, i) {
     font-style: normal;
