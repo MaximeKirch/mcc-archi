@@ -97,6 +97,15 @@ body {
 
 /* Missions accordion (atelier). */
 @layer components {
+  /* Lists typed or pasted in the editor, no extra gap (like its paragraphs). */
+  .texte-minimal ul {
+    list-style: disc;
+    padding-left: 18px;
+  }
+  .texte-minimal ol {
+    list-style: decimal;
+    padding-left: 18px;
+  }
   /* Italic text: the italic button sets a passage back to roman. */
   .italique-inverse :is(em, i) {
     font-style: normal;

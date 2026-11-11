@@ -110,13 +110,14 @@ describe("MissionsRow", () => {
     const { container } = render(
       <MissionsRow
         label=""
-        colonnes={[{ titre: "", missions: [{ libelle: "Conseil", definition: '<p style="text-align: center;">Analyse <strong>du site</strong></p>' }] }]}
+        colonnes={[{ titre: "", missions: [{ libelle: "Conseil", definition: '<p style="text-align: center;">Analyse <strong>du site</strong></p><ul><li>Plans</li><li>Coupes</li></ul>' }] }]}
         formules={[{ titre: "Essentielle", texte: "<p>Pour <em>qui</em>.</p>", puces: ["Visite <strong>sur site</strong>"] }]}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Conseil" }));
     expect(screen.getAllByRole("region").every((r) => r.querySelector("strong")?.textContent === "du site")).toBe(true);
     expect(screen.getAllByText("du site").every((b) => b.parentElement!.style.textAlign === "center")).toBe(true);
+    expect(screen.getAllByRole("region").every((r) => r.querySelectorAll(".texte-minimal li").length === 2)).toBe(true);
     expect(container.querySelector(".italique-inverse li strong")?.textContent).toBe("sur site");
     expect(screen.getByText("qui").tagName).toBe("EM");
   });
