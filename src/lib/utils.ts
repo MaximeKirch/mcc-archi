@@ -78,3 +78,50 @@ export function lignesDe(valeur: string): string[] {
     .map((ligne) => ligne.replace(/^\s*[-•*]\s*/, "").trim())
     .filter((ligne) => (html ? texteSeul(ligne) : ligne));
 }
+
+// "• ", "- " typed at line start (WordPress turns "-" into &#8211;).
+const marquePuce = /^(•|·|\*|-|–|—|&bull;|&middot;|&#8226;|&#8211;|&#8212;|&ndash;|&mdash;)(?:\s|&nbsp;|&#160;)+/;
+
+const echapper = (texte: string) => texte.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// Drops attribute-less <span>s (paste leftovers) and their closing tags.
+function sansSpansVides(html: string): string {
+  const pile: boolean[] = [];
+  return html.replace(/<span(\s[^>]*)?>|<\/span>/gi, (balise, attributs?: string) => {
+    if (balise[1] !== "/") {
+      const vide = !attributs?.trim();
+      pile.push(vide);
+      return vide ? "" : balise;
+    }
+    return pile.pop() ? "" : balise;
+  });
+}
+
+// Minimal WYSIWYG html (or old plain text, made html). Lines typed with a bullet get
+// their own block so wrapped lines align with the text, not the bullet.
+export function texteMinimalHtml(valeur: string): string {
+  const html = estHtml(valeur)
+    ? valeur
+    : valeur
+        .trim()
+        .split(/\r?\n\s*\r?\n/)
+        .map((p) => `<p>${echapper(p.trim()).replace(/\r?\n/g, "<br />")}</p>`)
+        .join("");
+  return sansSpansVides(html).replace(/<p([^>]*)>([\s\S]*?)<\/p>/gi, (paragraphe, attributs: string, contenu: string) => {
+    const lignes = contenu.trim().split(/<br\s*\/?>\s*/i);
+    if (!lignes.some((ligne) => marquePuce.test(ligne))) return paragraphe;
+    let sortie = "";
+    let apresPuce = true;
+    for (const ligne of lignes) {
+      const marque = ligne.match(marquePuce);
+      if (marque) {
+        sortie += `<span class="ligne-puce"><span class="ligne-puce-marque">${marque[1]} </span><span>${ligne.slice(marque[0].length)}</span></span>`;
+      } else {
+        // A bullet line is a block: no <br> needed around it.
+        sortie += (apresPuce ? "" : "<br />") + ligne;
+      }
+      apresPuce = Boolean(marque);
+    }
+    return `<p${attributs}>${sortie}</p>`;
+  });
+}
