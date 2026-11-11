@@ -61,3 +61,20 @@ export function splitLeadingYear(text: string): [string, string] {
   const year = /^\s*\d{4}(?:\s*[-–/]\s*\d{4})?(?!\d)/.exec(text)?.[0] ?? ''
   return [year, text.slice(year.length)]
 }
+
+const balise = /<[a-z][^>]*>/i;
+
+export const estHtml = (valeur: string) => balise.test(valeur);
+
+// Text a reader would see: no tags, no &nbsp;.
+export const texteSeul = (valeur: string) => valeur.replace(/<[^>]*>|&nbsp;/g, " ").trim();
+
+// One bullet per line: a line break, a paragraph, a subtitle or a list item (WYSIWYG), or a newline (old textarea).
+// Their alignment is dropped, bullets stay justified. Newlines too: a pasted list loses its tags.
+export function lignesDe(valeur: string): string[] {
+  const html = estHtml(valeur);
+  return valeur
+    .split(html ? /<br\s*\/?>|<\/?(?:p|h4|ul|ol|li)(?:\s[^>]*)?>|\n/i : "\n")
+    .map((ligne) => ligne.replace(/^\s*[-•*]\s*/, "").trim())
+    .filter((ligne) => (html ? texteSeul(ligne) : ligne));
+}

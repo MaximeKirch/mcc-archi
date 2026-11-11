@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { cn } from "#/lib/utils.ts";
+import { cn, estHtml } from "#/lib/utils.ts";
 import { accrocheClass, capTop, rowBase, rowLabel, titleGap } from "./Section.tsx";
 import { Link } from "@tanstack/react-router";
 import { filledButtonClass } from "./buttonStyles.ts";
@@ -18,6 +18,14 @@ export interface Formule {
   titre: string;
   texte: string;
   puces: string[];
+}
+
+// Minimal WYSIWYG html (cleaned by WordPress), or plain text with its line breaks.
+function TexteMinimal({ valeur, className }: { valeur: string; className?: string }) {
+  if (estHtml(valeur)) {
+    return <div className={cn("texte-minimal", className)} dangerouslySetInnerHTML={{ __html: valeur }} />;
+  }
+  return <div className={cn("texte-minimal whitespace-pre-line", className)}>{valeur}</div>;
 }
 
 // Last word and chevron never wrap apart.
@@ -62,14 +70,12 @@ function FormuleCards({ formules, className }: { formules: Formule[]; className?
           className="flex flex-col gap-3 rounded-[4px] border border-line-kaki px-5 pt-5 pb-6 lg:px-6 lg:pt-6 lg:pb-7 text-kaki"
         >
           {f.titre && <h4 className="text-lg leading-[26px] font-bold">{f.titre}</h4>}
-          {f.texte && <p className="texte-justifie text-sm leading-[22px] whitespace-pre-line">{f.texte}</p>}
+          {f.texte && <TexteMinimal valeur={f.texte} className="texte-justifie text-sm leading-[22px]" />}
           {f.puces.length > 0 && (
             // Tighter wrapped lines, same 28px from one bullet to the next.
-            <ul className="texte-justifie list-disc pl-[18px] text-sm leading-5 italic">
+            <ul className="texte-justifie italique-inverse list-disc pl-[18px] text-sm leading-5 italic">
               {f.puces.map((puce, j) => (
-                <li key={j} className="mb-2">
-                  {puce}
-                </li>
+                <li key={j} className="texte-minimal mb-2" dangerouslySetInnerHTML={{ __html: puce }} />
               ))}
             </ul>
           )}
@@ -124,9 +130,10 @@ export function MissionsRow({
           <p className="text-base leading-[26px] font-bold">
             <span className="mission-mot mission-pastille">{opened.libelle}</span>
           </p>
-          <p className="texte-justifie mt-2.5 text-[13px] leading-[22px] italic text-neutral-500 whitespace-pre-line">
-            {opened.definition}
-          </p>
+          <TexteMinimal
+            valeur={opened.definition}
+            className="texte-justifie italique-inverse mt-2.5 text-[13px] leading-[22px] italic text-neutral-500"
+          />
         </div>
       )}
     </div>
@@ -187,9 +194,12 @@ export function MissionsRow({
                         role="region"
                         aria-labelledby={buttonId(index)}
                         hidden={!open}
-                        className="lg:hidden texte-justifie pb-3 md:pr-6 text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-500 whitespace-pre-line"
+                        className="lg:hidden pb-3 md:pr-6"
                       >
-                        {definition}
+                        <TexteMinimal
+                          valeur={definition}
+                          className="texte-justifie italique-inverse text-[12px] leading-6 md:text-sm md:leading-[26px] italic text-neutral-500"
+                        />
                       </div>
                     </li>
                   );
