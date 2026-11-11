@@ -106,6 +106,20 @@ describe("MissionsRow", () => {
     expect(nowrap.querySelector("svg")).not.toBeNull();
   });
 
+  it("renders bold and italic from the minimal editor", () => {
+    const { container } = render(
+      <MissionsRow
+        label=""
+        colonnes={[{ titre: "", missions: [{ libelle: "Conseil", definition: "<p>Analyse <strong>du site</strong></p>" }] }]}
+        formules={[{ titre: "Essentielle", texte: "<p>Pour <em>qui</em>.</p>", puces: ["Visite <strong>sur site</strong>"] }]}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Conseil" }));
+    expect(screen.getAllByRole("region").every((r) => r.querySelector("strong")?.textContent === "du site")).toBe(true);
+    expect(container.querySelector(".italique-inverse li strong")?.textContent).toBe("sur site");
+    expect(screen.getByText("qui").tagName).toBe("EM");
+  });
+
   it("renders one card per formule, nothing without formules", () => {
     const { container, rerender } = render(<MissionsRow label="" colonnes={colonnes} />);
     expect(container.querySelectorAll("h4")).toHaveLength(0);

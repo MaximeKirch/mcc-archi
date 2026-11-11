@@ -96,6 +96,17 @@ body {
 
 /* Missions accordion (atelier). */
 @layer components {
+  /* A blank line between paragraphs, like the old textarea. */
+  .texte-minimal > p + p {
+    margin-top: 1lh;
+  }
+  .texte-minimal :is(strong, b) {
+    font-weight: 600;
+  }
+  /* Italic text: the italic button sets a passage back to roman. */
+  .italique-inverse :is(em, i) {
+    font-style: normal;
+  }
   .mission {
     --accent: var(--color-kaki);
     color: #404040;
