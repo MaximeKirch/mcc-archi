@@ -131,6 +131,15 @@ describe("MissionsRow", () => {
     expect(screen.getAllByText("Visite")).toHaveLength(2);
   });
 
+  it("cycles card backgrounds cream, linen, sand", () => {
+    render(<MissionsRow label="" colonnes={colonnes} formules={["A", "B", "C", "D", "E"].map(formule)} />);
+    const fonds = screen
+      .getAllByRole("heading", { level: 4 })
+      .map((h) => h.closest("li")!.className.match(/bg-(cream|linen|sand)/)?.[1]);
+    expect(fonds).toEqual(["cream", "linen", "sand", "cream", "linen"]);
+    expect(screen.getByText("C").closest("li")!.className).toContain("text-kaki-dark");
+  });
+
   it("links to contact under the formules only", () => {
     const { rerender } = render(<MissionsRow label="" colonnes={colonnes} />);
     expect(screen.queryByRole("link")).toBeNull();

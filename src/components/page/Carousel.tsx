@@ -95,13 +95,13 @@ function SlideView({ slide, index, count, open, suiteId, onToggle, go }: SlideVi
     <div
       className={cn(
         "grid grid-cols-[auto_1fr_auto] items-center",
-        split && "lg:grid-cols-[auto_1fr_auto_2rem_calc(50%-1rem)]",
+        split && "lg:grid-cols-[auto_1fr_auto_2rem_calc((100%-2rem)/3)]",
       )}
     >
       {slide.image && (
         <ResponsiveImage
           image={slide.image}
-          sizes="(min-width: 1024px) 364px, (min-width: 768px) 760px, 100vw"
+          sizes="(min-width: 1024px) 486px, (min-width: 768px) 760px, 100vw"
           loading={index === 0 ? "eager" : "lazy"}
           className={cn(
             "col-span-full row-start-1 block w-full aspect-square object-cover rounded-lg",
