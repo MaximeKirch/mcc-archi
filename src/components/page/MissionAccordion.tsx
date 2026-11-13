@@ -58,13 +58,19 @@ const columnHeader = "mb-1 md:mb-0 font-mono text-[15px] leading-5 tracking-[1.4
 
 const word = "py-[9px] md:py-0 md:pb-3 font-bold text-[15px] leading-6 md:text-base md:leading-[26px]";
 
+// By position, repeating. Sand takes kaki-dark: plain kaki is under 5:1 on it.
+const fondsFormules = ["bg-cream text-kaki", "bg-linen text-kaki", "bg-sand text-kaki-dark"];
+
 function FormuleCards({ formules, className }: { formules: Formule[]; className?: string }) {
   return (
     <ul className={cn("grid gap-4 lg:grid-cols-3", className)}>
       {formules.map((f, i) => (
         <li
           key={i}
-          className="flex flex-col gap-3 rounded-[4px] border border-line-kaki px-5 pt-5 pb-6 lg:px-6 lg:pt-6 lg:pb-7 text-kaki"
+          className={cn(
+            "flex flex-col gap-3 rounded-[4px] border border-line-kaki px-5 pt-5 pb-6 lg:px-6 lg:pt-6 lg:pb-7 [&_h4]:text-current",
+            fondsFormules[i % fondsFormules.length],
+          )}
         >
           {f.titre && <h4 className="text-lg leading-[26px] font-bold">{f.titre}</h4>}
           {f.texte && <TexteMinimal valeur={f.texte} className="texte-justifie text-sm leading-[22px]" />}
