@@ -57,7 +57,29 @@ describe("Carousel", () => {
     );
     const titles = container.querySelectorAll("h4");
     expect(titles).toHaveLength(2);
-    expect(titles[0].nextElementSibling?.tagName).toBe("IMG");
+    expect(titles[0].nextElementSibling?.firstElementChild?.tagName).toBe("IMG");
+  });
+
+  it("shows the full text on demand, for every slide", () => {
+    const withSuite = slides.map((s) => ({ ...s, texte_court: "<p>Court</p>", texte: "<p>Long</p>" }));
+    const { container } = render(<Carousel slides={withSuite} label="Test" />);
+    const toggle = () => active(container).querySelector<HTMLButtonElement>('[data-control="suite"]')!;
+    const suite = () => document.getElementById(toggle().getAttribute("aria-controls")!)!;
+
+    expect(suite().hidden).toBe(true);
+    fireEvent.click(toggle());
+    expect(toggle().getAttribute("aria-expanded")).toBe("true");
+    expect(suite().hidden).toBe(false);
+
+    fireEvent.click(control(container, "next"));
+    expect(suite().hidden).toBe(false);
+    expect(suite().textContent).toBe("Long");
+  });
+
+  it("shows the text directly without a short one", () => {
+    const { container } = render(<Carousel slides={slides} label="Test" />);
+    expect(container.querySelector('[data-control="suite"]')).toBeNull();
+    expect(active(container).textContent).toContain("Un");
   });
 
   it("keeps focus on the same button in the new slide", () => {
