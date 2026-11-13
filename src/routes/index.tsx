@@ -10,7 +10,8 @@ import { gsap, prefersReducedMotion, useGSAP } from "#/lib/gsap.ts";
 import { seoHead } from "#/lib/seo.ts";
 import { HeroHeader } from "#/components/page/HeroHeader.tsx";
 import { SiteFooter } from "#/components/page/SiteFooter.tsx";
-import { ProjectGrid } from "#/components/project/ProjectGrid.tsx";
+import { ProjectGrid, carteVar, largeurPage } from "#/components/project/ProjectGrid.tsx";
+import { cn } from "#/lib/utils.ts";
 import { AccompanimentSection } from "#/components/home/AccompanimentSection.tsx";
 
 export const Route = createFileRoute("/")({
@@ -83,25 +84,26 @@ function HomeComponent() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-neutral-50 text-neutral-900 p-4 md:p-8 font-sans antialiased selection:bg-neutral-200"
+      className={cn(carteVar, "min-h-screen bg-neutral-50 text-neutral-900 p-4 md:p-8 font-sans antialiased selection:bg-neutral-200")}
     >
       <HeroHeader
         name={siteConfig.name}
         architect={siteConfig.architect}
         intro={page?.acf.accroche || undefined}
         labels={labels}
+        className={largeurPage}
       />
-      <main className="max-w-7xl min-[120rem]:max-w-[1800px] mx-auto">
+      <main className={cn("max-w-7xl min-[120rem]:max-w-[1800px] mx-auto", largeurPage)}>
         <h2 className="js-header-fade text-kaki leading-none [text-box:trim-both_cap_alphabetic] text-sm md:text-2xl mb-8 mt-4 tracking-widest uppercase font-mono font-medium">
           {labels.titre_projets}
         </h2>
-        <ProjectGrid projects={projets} />
+        <ProjectGrid projects={projets} fitScreen />
         <AccompanimentSection
           title={labels.titre_accompagnement}
           items={asList(page?.acf.accompagnement)}
         />
       </main>
-      <SiteFooter className="pb-6 md:pb-4" />
+      <SiteFooter className={cn("pb-6 md:pb-4", largeurPage)} />
     </div>
   );
 }

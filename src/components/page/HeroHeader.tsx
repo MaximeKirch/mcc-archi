@@ -7,6 +7,7 @@ interface HeroHeaderProps {
   architect: string;
   intro?: string;
   labels: HomeLabels;
+  className?: string;
 }
 
 const DEFAULT_INTRO =
@@ -18,12 +19,12 @@ const linkClass =
 // 44px hit area without moving the border underline.
 const touchArea = "relative before:absolute before:inset-x-0 before:-inset-y-4";
 
-export function HeroHeader({ name, architect, intro = DEFAULT_INTRO, labels }: HeroHeaderProps) {
+export function HeroHeader({ name, architect, intro = DEFAULT_INTRO, labels, className }: HeroHeaderProps) {
   const words = name.split(" ");
   const firstWord = words[0];
 
   return (
-    <header className="max-w-7xl min-[120rem]:max-w-[1800px] mx-auto">
+    <header className={cn("max-w-7xl min-[120rem]:max-w-[1800px] mx-auto", className)}>
       <div className="flex items-start gap-6 lg:grid lg:grid-cols-3 lg:items-stretch">
         <div className="flex-1 overflow-hidden lg:col-span-2 lg:flex lg:flex-col">
           <h1 className="js-header-title text-[clamp(2rem,10.5vw,3rem)] md:text-7xl font-semibold tracking-tighter md:tracking-[0.065em] uppercase leading-[1.2] text-kaki">

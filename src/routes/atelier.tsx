@@ -83,7 +83,7 @@ function blocContent(bloc: AtelierBloc): React.ReactNode {
       const { accroche, texte_principal, texte_secondaire, citation, texte_final } = bloc;
       const slides = asList(bloc.carrousel)
         .map((s) => ({ ...s, image: normalizeImage(s.image) }))
-        .filter((s) => s.image || s.titre || s.texte);
+        .filter((s) => s.image || s.titre || s.texte_court || s.texte);
       if (!(accroche || texte_principal || texte_secondaire || citation || texte_final || slides.length))
         return null;
       return (

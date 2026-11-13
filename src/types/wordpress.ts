@@ -68,6 +68,8 @@ type AcfImage = WordPressImage | false | null;
 export interface CarouselSlide {
   image: AcfImage;
   titre: string;
+  // Missing before the backend migration.
+  texte_court?: string;
   texte: string;
 }
 
